@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Gaple Banjar">
+    <meta name="theme-color" content="#064e3b">
+    <title>Gaple Banjar - Domino Klasik Jitak</title>
+    <!-- Ikon & Apple Touch Icon SVG Bawaan Siap GitHub Pages -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%230f172a'/%3E%3Cstop offset='1' stop-color='%231e3a8a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='180' height='180' rx='38' fill='url(%23g)'/%3E%3Crect x='8' y='8' width='164' height='164' rx='32' fill='none' stroke='%2338bdf8' stroke-width='5'/%3E%3Crect x='54' y='24' width='72' height='132' rx='14' fill='%23fffdf5' stroke='%23b91c1c' stroke-width='4'/%3E%3Cline x1='60' y1='90' x2='120' y2='90' stroke='%231e3a8a' stroke-width='4'/%3E%3Ccircle cx='90' cy='57' r='10' fill='%23dc2626'/%3E%3Ccircle cx='74' cy='110' r='8' fill='%23dc2626'/%3E%3Ccircle cx='106' cy='110' r='8' fill='%23dc2626'/%3E%3Ccircle cx='74' cy='136' r='8' fill='%23dc2626'/%3E%3Ccircle cx='106' cy='136' r='8' fill='%23dc2626'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%230f172a'/%3E%3Cstop offset='1' stop-color='%231e3a8a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='180' height='180' fill='url(%23g)'/%3E%3Crect x='54' y='24' width='72' height='132' rx='14' fill='%23fffdf5' stroke='%23b91c1c' stroke-width='4'/%3E%3Cline x1='60' y1='90' x2='120' y2='90' stroke='%231e3a8a' stroke-width='4'/%3E%3Ccircle cx='90' cy='57' r='10' fill='%23dc2626'/%3E%3Ccircle cx='74' cy='110' r='8' fill='%23dc2626'/%3E%3Ccircle cx='106' cy='110' r='8' fill='%23dc2626'/%3E%3Ccircle cx='74' cy='136' r='8' fill='%23dc2626'/%3E%3Ccircle cx='106' cy='136' r='8' fill='%23dc2626'/%3E%3C/svg%3E">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at 50% 35%, #10b981 0%, #059669 32%, #065f46 70%, #022c22 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        .font-display {
+            font-family: 'Fredoka', sans-serif;
+        }
+        /* Header Colorful Sasirangan Banjar */
+        .header-banjar {
+            background:
+                repeating-linear-gradient(
+                    135deg,
+                    rgba(251, 191, 36, 0.14) 0px,
+                    rgba(251, 191, 36, 0.14) 8px,
+                    rgba(239, 68, 68, 0.10) 8px,
+                    rgba(239, 68, 68, 0.10) 16px,
+                    transparent 16px,
+                    transparent 24px
+                ),
+                linear-gradient(90deg, #064e3b 0%, #0f766e 50%, #1e3a8a 100%);
+        }
+
+        /* ========================================================
+           DESAIN KARTU DOMINO ALA MERK 'JITAK' TRADISIONAL
+           ======================================================== */
+        .jitak-card {
+            background: linear-gradient(160deg, #fffdf5 0%, #fef9e7 65%, #f5eedc 100%);
+            border: 2px solid #1e3a8a;
+            box-shadow:
+                inset 0 0 0 1.5px #dc2626,
+                0 4px 0 #cbd5e1,
+                0 6px 14px rgba(0, 0, 0, 0.4);
+            position: relative;
+            transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.16s ease, opacity 0.2s ease;
+        }
+        /* Ornamen garis pemisah khas kartu gaple Jitak */
+        .jitak-divider-h {
+            height: 3px;
+            background: linear-gradient(90deg, #1e3a8a 0%, #dc2626 50%, #1e3a8a 100%);
+            position: relative;
+        }
+        .jitak-divider-h::after {
+            content: '✦';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 8px;
+            line-height: 1;
+            color: #dc2626;
+            background: #fffdf5;
+            padding: 0 2px;
+        }
+        .jitak-divider-v {
+            width: 3px;
+            background: linear-gradient(180deg, #1e3a8a 0%, #dc2626 50%, #1e3a8a 100%);
+            position: relative;
+        }
+        .jitak-divider-v::after {
+            content: '✦';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 7px;
+            line-height: 1;
+            color: #dc2626;
+            background: #fffdf5;
+            padding: 1px 0;
+        }
+
+        /* Titik Pip Merah (1 & 4) dan Biru Pekat (2, 3, 5, 6) ala Jitak */
+        .pip-jitak {
+            width: 7px;
+            height: 7px;
+            border-radius: 9999px;
+            background: radial-gradient(circle at 35% 35%, #2563eb, #172554);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5);
+        }
+        .pip-jitak.red {
+            background: radial-gradient(circle at 35% 35%, #f87171, #b91c1c);
+            width: 8px;
+            height: 8px;
+        }
+        .pip-jitak-sm {
+            width: 5px;
+            height: 5px;
+            border-radius: 9999px;
+            background: radial-gradient(circle at 35% 35%, #2563eb, #172554);
+        }
+        .pip-jitak-sm.red {
+            background: radial-gradient(circle at 35% 35%, #f87171, #b91c1c);
+            width: 5.5px;
+            height: 5.5px;
+        }
+
+        /* Kartu yang bisa dimainkan */
+        .jitak-playable {
+            transform: translateY(-8px);
+            box-shadow:
+                inset 0 0 0 1.5px #dc2626,
+                0 5px 0 #f59e0b,
+                0 0 18px rgba(251, 191, 36, 0.85);
+            border-color: #f59e0b;
+        }
+        .jitak-playable:active {
+            transform: translateY(-2px) scale(0.95);
+        }
+
+        /* Animasi Kartu Masuk Meja */
+        @keyframes cardSlam {
+            0% { transform: scale(1.35) translateY(-16px); opacity: 0.3; }
+            70% { transform: scale(0.95) translateY(2px); opacity: 1; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        .animate-slam {
+            animation: cardSlam 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* Animasi Potong Jalur */
+        @keyframes slashPop {
+            0% { transform: scale(0.4) rotate(-6deg); opacity: 0; }
+            35% { transform: scale(1.1) rotate(2deg); opacity: 1; }
+            80% { transform: scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0; }
+        }
+        .animate-slash {
+            animation: slashPop 1.4s ease-out forwards;
+        }
+
+        @keyframes glowBtn {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.8); }
+            50% { box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); }
+        }
+        .btn-cut-pulse {
+            animation: glowBtn 1.4s infinite;
+        }
+
+        .chain-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+        .chain-scroll::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 9999px;
+        }
+        .chain-scroll::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, #f59e0b, #ef4444);
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- HEADER COLORFUL & PAPAN SKOR MANYARATUS -->
+    <header class="header-banjar border-b-2 border-amber-400/50 px-3 py-2 sticky top-0 z-30 shadow-xl">
+        <div class="max-w-4xl mx-auto flex flex-wrap items-center justify-between gap-2">
+            <!-- Logo & Judul -->
+            <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-300 via-orange-400 to-rose-500 text-slate-950 font-black flex items-center justify-center text-lg shadow-md border-2 border-white">
+                    🁣
+                </div>
+                <div>
+                    <div class="flex items-center gap-1.5">
+                        <h1 class="font-display text-base sm:text-lg font-bold tracking-wide text-amber-300 drop-shadow">GAPLE BANJAR</h1>
+                        <span id="round-badge" class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-rose-600 text-white shadow">Ronde 1</span>
+                    </div>
+                    <p class="text-[11px] text-emerald-100 font-semibold">Manyaratus: <strong id="target-score-label" class="text-amber-300">100 Poin</strong></p>
+                </div>
+            </div>
+
+            <!-- Papan Skor 4 Pemain -->
+            <div id="scoreboard-mini" class="flex items-center gap-1.5 bg-black/45 px-2.5 py-1.5 rounded-2xl border border-amber-400/30 text-[11px] sm:text-xs shadow-inner">
+                <!-- Diisi JS -->
+            </div>
+
+            <!-- Tombol Suara, Aturan & Reset -->
+            <div class="flex items-center gap-1.5">
+                <button id="sound-toggle-btn" onclick="toggleSound()" class="px-2.5 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 active:scale-95 text-slate-950 font-extrabold text-xs shadow transition" title="Suara Ctak">
+                    🔊 Ctak: ON
+                </button>
+                <button onclick="openModal('rules-modal')" class="px-2.5 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-extrabold text-xs shadow transition">
+                    📜 Aturan
+                </button>
+                <button onclick="openModal('settings-modal')" class="p-1.5 rounded-xl bg-white/15 hover:bg-white/25 border border-white/20 text-white text-xs transition active:scale-95" title="Pengaturan">
+                    ⚙️
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- AREA MEJA PERMAINAN UTAMA -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-2.5 sm:px-4 py-2 flex flex-col justify-between gap-2">
+
+        <!-- BARIS LAWAN AI (UDIN, ACIL, AMAT) -->
+        <div class="grid grid-cols-3 gap-2">
+            <!-- AI 1: Udin -->
+            <div id="ai-box-1" class="bg-gradient-to-br from-blue-900/75 to-indigo-950/85 border-2 border-sky-400/30 rounded-2xl p-2 flex items-center justify-between shadow-lg transition">
+                <div class="flex items-center gap-2 min-w-0">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-sky-400 to-blue-600 flex items-center justify-center text-sm shadow border border-white/50 shrink-0">😎</div>
+                    <div class="min-w-0">
+                        <div class="text-xs font-extrabold text-sky-200 truncate">Udin</div>
+                        <div id="ai-status-1" class="text-[10px] text-sky-300/90 truncate">7 kartu</div>
+                    </div>
+                </div>
+                <span id="ai-count-1" class="shrink-0 w-6 h-6 rounded-lg bg-sky-500 text-slate-950 font-black text-xs flex items-center justify-center shadow">7</span>
+            </div>
+
+            <!-- AI 2: Acil -->
+            <div id="ai-box-2" class="bg-gradient-to-br from-rose-900/75 to-pink-950/85 border-2 border-pink-400/30 rounded-2xl p-2 flex items-center justify-between shadow-lg transition">
+                <div class="flex items-center gap-2 min-w-0">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-pink-400 to-rose-600 flex items-center justify-center text-sm shadow border border-white/50 shrink-0">🧕</div>
+                    <div class="min-w-0">
+                        <div class="text-xs font-extrabold text-pink-200 truncate">Acil</div>
+                        <div id="ai-status-2" class="text-[10px] text-pink-300/90 truncate">7 kartu</div>
+                    </div>
+                </div>
+                <span id="ai-count-2" class="shrink-0 w-6 h-6 rounded-lg bg-pink-400 text-slate-950 font-black text-xs flex items-center justify-center shadow">7</span>
+            </div>
+
+            <!-- AI 3: Amat -->
+            <div id="ai-box-3" class="bg-gradient-to-br from-amber-900/75 to-orange-950/85 border-2 border-amber-400/30 rounded-2xl p-2 flex items-center justify-between shadow-lg transition">
+                <div class="flex items-center gap-2 min-w-0">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-400 to-orange-600 flex items-center justify-center text-sm shadow border border-white/50 shrink-0">🤠</div>
+                    <div class="min-w-0">
+                        <div class="text-xs font-extrabold text-amber-200 truncate">Amat</div>
+                        <div id="ai-status-3" class="text-[10px] text-amber-300/90 truncate">7 kartu</div>
+                    </div>
+                </div>
+                <span id="ai-count-3" class="shrink-0 w-6 h-6 rounded-lg bg-amber-400 text-slate-950 font-black text-xs flex items-center justify-center shadow">7</span>
+            </div>
+        </div>
+
+        <!-- ZONA BALAK KELUAR (KHAS BANJAR: TERPISAH DARI JALUR UTAMA) -->
+        <div class="bg-gradient-to-r from-indigo-950/85 via-blue-950/85 to-cyan-950/85 border-2 border-cyan-400/40 rounded-2xl px-3 py-2 shadow-lg">
+            <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[11px] font-extrabold uppercase tracking-wider text-cyan-300 flex items-center gap-1.5">
+                    <span>💎 Zona Balak Keluar</span>
+                    <span class="text-[10px] font-medium text-cyan-100/80 hidden sm:inline">(Turun saat angka cocok, tidak masuk jalur)</span>
+                </span>
+                <span id="balak-count-badge" class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-cyan-500 text-slate-950">0 / 7 Balak</span>
+            </div>
+            <div id="balak-zone" class="flex items-center gap-2 min-h-[42px] overflow-x-auto pb-0.5">
+                <span class="text-[11px] text-cyan-200/70 italic">Belum ada balak keluar...</span>
+            </div>
+        </div>
+
+        <!-- MEJA JALUR KARTU UTAMA -->
+        <div class="relative bg-gradient-to-b from-emerald-950/75 to-teal-950/85 border-2 border-amber-400/45 rounded-3xl p-3 sm:p-4 flex flex-col justify-between min-h-[215px] sm:min-h-[245px] shadow-2xl">
+
+            <!-- Overlay Animasi Potong Jalur -->
+            <div id="cut-animation-overlay" class="pointer-events-none absolute inset-0 z-20 hidden items-center justify-center">
+                <div class="bg-gradient-to-r from-amber-400 via-orange-500 to-rose-600 text-white font-display font-bold text-xl sm:text-3xl px-6 py-3 rounded-2xl shadow-2xl border-2 border-white animate-slash text-center">
+                    ✂️ POTONG JALUR!<br>
+                    <span class="text-xs sm:text-sm font-sans font-extrabold">Jalur Diringkas Jadi 1 Kartu Ujung</span>
+                </div>
+            </div>
+
+            <!-- Bar Info Ujung Kiri, Status Giliran & Ujung Kanan -->
+            <div class="flex items-center justify-between gap-2 pb-2 border-b border-white/15">
+                <div class="flex items-center gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 border border-emerald-300 px-3 py-1 rounded-xl shadow">
+                    <span class="text-[10px] font-extrabold uppercase text-emerald-100">Kiri:</span>
+                    <span id="left-end-badge" class="font-display text-base sm:text-lg font-bold text-white">-</span>
+                </div>
+
+                <div class="flex flex-col items-center text-center px-1">
+                    <span id="turn-banner" class="font-display text-sm sm:text-base font-bold text-amber-300 drop-shadow">
+                        Giliran Kamu
+                    </span>
+                    <span id="table-hint" class="text-[10px] sm:text-[11px] text-emerald-100">
+                        Ketuk kartu menyala untuk turun
+                    </span>
+                </div>
+
+                <div class="flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-orange-500 border border-amber-200 px-3 py-1 rounded-xl shadow">
+                    <span class="text-[10px] font-extrabold uppercase text-slate-950">Kanan:</span>
+                    <span id="right-end-badge" class="font-display text-base sm:text-lg font-bold text-slate-950">-</span>
+                </div>
+            </div>
+
+            <!-- TOMBOL POTONG JALUR (SISA 1 KARTU YANG UJUNGNYA SAMA) -->
+            <div id="cut-action-bar" class="hidden my-2 flex flex-wrap items-center justify-center gap-2">
+                <!-- Diisi tombol potong jalur oleh JS -->
+            </div>
+
+            <!-- Jalur Kartu Utama -->
+            <div id="chain-container" class="chain-scroll flex-1 flex items-center justify-start sm:justify-center gap-1.5 overflow-x-auto py-3 px-2 my-auto">
+                <div class="text-center w-full text-xs sm:text-sm text-emerald-200/80">
+                    Meja jalur utama masih kosong. Turunkan kartu pertama!
+                </div>
+            </div>
+
+            <!-- Log Aktivitas & Info Potongan -->
+            <div class="flex items-center justify-between text-[10px] sm:text-[11px] text-emerald-100/90 pt-1.5 border-t border-white/15">
+                <span id="last-action-log" class="truncate font-medium">Siap bermain Gaple Banjar!</span>
+                <span id="cut-pile-info" class="shrink-0 bg-amber-500/20 border border-amber-400/40 text-amber-300 font-bold px-2 py-0.5 rounded-full ml-2">
+                    ✂️ Potongan: 0
+                </span>
+            </div>
+        </div>
+
+        <!-- AREA KARTU PEMAIN (MERK JITAK) -->
+        <section class="bg-gradient-to-t from-slate-950/90 to-emerald-950/80 border-2 border-amber-400/40 rounded-3xl p-3 shadow-2xl">
+            <div class="flex items-center justify-between mb-2 px-1">
+                <div class="flex items-center gap-2">
+                    <span class="font-display text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-300">Kartu Kamu (Jitak)</span>
+                    <span id="my-pip-total" class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-200">0 Poin</span>
+                </div>
+                <button id="pass-btn" onclick="playerPass()" class="hidden px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-400 hover:to-red-500 active:scale-95 text-white font-extrabold text-xs shadow-lg border border-rose-300 transition">
+                    ⏭️ Lewat (Tidak Cocok)
+                </button>
+            </div>
+
+            <!-- Deretan Kartu Domino Jitak Pemain -->
+            <div id="player-hand" class="flex items-center justify-center flex-wrap sm:flex-nowrap gap-2 sm:gap-2.5 min-h-[104px] py-1">
+                <!-- Kartu dirender JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL PILIH UJUNG KIRI / KANAN -->
+    <div id="side-choice-modal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-gradient-to-b from-emerald-900 to-teal-950 border-2 border-amber-400 rounded-3xl max-w-xs w-full p-5 shadow-2xl text-center space-y-4">
+            <h3 class="font-display text-lg font-bold text-amber-300">Sambung ke Ujung Mana?</h3>
+            <p id="side-choice-desc" class="text-xs text-emerald-100"></p>
+            <div class="grid grid-cols-2 gap-2.5">
+                <button id="choose-left-btn" class="py-3 px-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 active:scale-95 text-slate-950 font-black text-xs shadow-lg transition">
+                    ⬅️ Ujung Kiri
+                </button>
+                <button id="choose-right-btn" class="py-3 px-2 rounded-2xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 active:scale-95 text-slate-950 font-black text-xs shadow-lg transition">
+                    Ujung Kanan ➡️
+                </button>
+            </div>
+            <button onclick="closeModal('side-choice-modal')" class="w-full py-2 rounded-xl bg-black/40 text-slate-200 text-xs font-bold">
+                Batal
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL HASIL RONDE / GUPLAH / MANYARATUS -->
+    <div id="round-end-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-gradient-to-b from-teal-950 to-slate-950 border-2 border-amber-400 rounded-3xl max-w-md w-full p-5 shadow-2xl space-y-4">
+            <div class="text-center space-y-1">
+                <div id="round-end-badge" class="inline-block px-3 py-1 rounded-full bg-amber-400 text-slate-950 text-xs font-black uppercase tracking-wider shadow">
+                    Ronde Selesai
+                </div>
+                <h2 id="round-end-title" class="font-display text-xl sm:text-2xl font-bold text-white">Kamu Menang Ronde!</h2>
+                <p id="round-end-subtitle" class="text-xs text-emerald-200"></p>
+            </div>
+
+            <div id="round-end-details" class="bg-black/45 rounded-2xl p-3 border border-white/15 space-y-2 text-xs">
+                <!-- Rincian poin -->
+            </div>
+
+            <div id="round-end-scores" class="grid grid-cols-2 gap-2 text-xs">
+                <!-- Skor total -->
+            </div>
+
+            <button id="next-round-btn" onclick="startNextRound()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-400 to-rose-500 hover:brightness-110 active:scale-95 text-slate-950 font-black text-sm shadow-xl transition">
+                Lanjut Ronde Berikutnya ➡️
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL ATURAN GAPLE BANJAR -->
+    <div id="rules-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-gradient-to-b from-emerald-950 to-slate-950 border-2 border-amber-400/70 rounded-3xl max-w-md w-full p-5 shadow-2xl space-y-3.5 max-h-[85vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-white/15 pb-2.5">
+                <h3 class="font-display text-base font-bold text-amber-300">📜 Aturan Gaple Khas Banjar</h3>
+                <button onclick="closeModal('rules-modal')" class="w-7 h-7 rounded-full bg-rose-600 text-white text-xs font-black">✕</button>
+            </div>
+            <div class="space-y-2.5 text-xs text-slate-100 leading-relaxed">
+                <div class="bg-cyan-950/60 p-3 rounded-2xl border border-cyan-400/40">
+                    <h4 class="font-extrabold text-cyan-300 mb-1">1. Balak Cocok & Zona Terpisah</h4>
+                    <p>Kartu balak (<code>0|0</code> s.d. <code>6|6</code>) <strong>hanya bisa diturunkan jika angkanya cocok</strong> dengan salah satu ujung meja (kecuali pembuka ronde). Setelah turun, balak diletakkan terpisah di <strong>Zona Balak Keluar</strong> atas meja dan tidak mengubah angka ujung kiri/kanan.</p>
+                </div>
+                <div class="bg-amber-950/60 p-3 rounded-2xl border border-amber-400/40">
+                    <h4 class="font-extrabold text-amber-300 mb-1">2. Potong Jalur (Sisa 1 Kartu Ujung Sama)</h4>
+                    <p>Saat jalur utama sudah memiliki minimal <strong>4 kartu</strong> dan angka pada ujung kiri maupun ujung kanan sama dengan kartu di tengah jalur, tombol <strong>✂️ POTONG JALUR</strong> akan aktif. Jalur dipangkas hingga <strong>tersisa 1 kartu utama</strong> yang kedua ujungnya tetap sama dengan ujung kiri & kanan sebelumnya agar meja ringkas!</p>
+                </div>
+                <div class="bg-rose-950/60 p-3 rounded-2xl border border-rose-400/40">
+                    <h4 class="font-extrabold text-rose-300 mb-1">3. Guplah (Mati Langkah / Buntu)</h4>
+                    <p>Jika ke-4 pemain tidak bisa jalan (buntu), pemenang adalah pemilik <strong>total poin sisa terkecil</strong>. Balak <code>0|0</code> yang tersisa di tangan dihukum <strong>25 poin</strong>, dan balak lainnya dihitung <strong>2x lipat</strong>.</p>
+                </div>
+                <div class="bg-emerald-950/60 p-3 rounded-2xl border border-emerald-400/40">
+                    <h4 class="font-extrabold text-emerald-300 mb-1">4. Manyaratus (Target 100 Poin)</h4>
+                    <p>Pemenang ronde mendapat total nilai sisa kartu dari ketiga lawannya. Pemain pertama yang menembus <strong>100 poin</strong> memenangkan pertandingan (<em>Manyaratus</em>)!</p>
+                </div>
+            </div>
+            <button onclick="closeModal('rules-modal')" class="w-full py-2.5 rounded-2xl bg-amber-400 text-slate-950 font-black text-xs">
+                Siap Main!
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL PENGATURAN -->
+    <div id="settings-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-gradient-to-b from-emerald-950 to-slate-950 border-2 border-amber-400/70 rounded-3xl max-w-sm w-full p-5 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-white/15 pb-2.5">
+                <h3 class="font-display text-base font-bold text-amber-300">⚙️ Pengaturan Game</h3>
+                <button onclick="closeModal('settings-modal')" class="w-7 h-7 rounded-full bg-rose-600 text-white text-xs font-black">✕</button>
+            </div>
+
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-200 mb-1.5">Target Kemenangan (Manyaratus):</label>
+                    <select id="setting-target-score" onchange="updateSettings()" class="w-full bg-black/60 border border-amber-400/40 rounded-xl px-3 py-2.5 text-white font-bold">
+                        <option value="100">100 Poin (Manyaratus Standar)</option>
+                        <option value="50">50 Poin (Game Cepat)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="pt-2 flex flex-col gap-2">
+                <button onclick="resetFullMatch()" class="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-xs">
+                    🔄 Reset Skor & Mulai Ulang
+                </button>
+                <button onclick="closeModal('settings-modal')" class="w-full py-2.5 rounded-xl bg-emerald-500 text-slate-950 font-extrabold text-xs">
+                    Simpan & Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========================================================
+        // SYNTHESIZER SUARA KARTU DOMINO 'CTAK!' (WEB AUDIO API)
+        // ========================================================
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function ensureAudioCtx() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtx = new AudioContextClass();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Suara hentakan kartu plastik/kertas keras ke meja ("CTAK!")
+        function playCtakSound(pitchBoost = 1) {
+            if (!soundEnabled) return;
+            try {
+                ensureAudioCtx();
+                if (!audioCtx) return;
+
+                const now = audioCtx.currentTime;
+
+                // 1. Transien klik tajam (noise burst pendek 22ms)
+                const bufferSize = Math.floor(audioCtx.sampleRate * 0.025);
+                const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = noiseBuffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.28));
+                }
+
+                const noise = audioCtx.createBufferSource();
+                noise.buffer = noiseBuffer;
+
+                const bandpass = audioCtx.createBiquadFilter();
+                bandpass.type = 'bandpass';
+                bandpass.frequency.setValueAtTime(1950 * pitchBoost, now);
+                bandpass.Q.setValueAtTime(2.4, now);
+
+                const noiseGain = audioCtx.createGain();
+                noiseGain.gain.setValueAtTime(0.95, now);
+                noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.025);
+
+                noise.connect(bandpass);
+                bandpass.connect(noiseGain);
+                noiseGain.connect(audioCtx.destination);
+                noise.start(now);
+
+                // 2. Resonansi kayu/meja ("tak")
+                const osc = audioCtx.createOscillator();
+                const oscGain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(420 * pitchBoost, now);
+                osc.frequency.exponentialRampToValueAtTime(115, now + 0.045);
+
+                oscGain.gain.setValueAtTime(0.65, now);
+                oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.048);
+
+                osc.connect(oscGain);
+                oscGain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.05);
+            } catch (e) {
+                // Abaikan jika browser memblokir audio sebelum interaksi pertama
+            }
+        }
+
+        // Suara efek potong jalur ("Sring-Ctak!")
+        function playCutSound() {
+            if (!soundEnabled) return;
+            playCtakSound(1.25);
+            setTimeout(() => playCtakSound(1.45), 75);
+        }
+
+        // Suara efek menang / guplah
+        function playWinSound() {
+            if (!soundEnabled) return;
+            try {
+                ensureAudioCtx();
+                if (!audioCtx) return;
+                const notes = [523.25, 659.25, 783.99, 1046.5];
+                notes.forEach((freq, idx) => {
+                    const now = audioCtx.currentTime + idx * 0.09;
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now);
+                    gain.gain.setValueAtTime(0.22, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.26);
+                });
+            } catch (e) {}
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            ensureAudioCtx();
+            const btn = document.getElementById('sound-toggle-btn');
+            if (soundEnabled) {
+                btn.textContent = '🔊 Ctak: ON';
+                btn.className = 'px-2.5 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 active:scale-95 text-slate-950 font-extrabold text-xs shadow transition';
+                playCtakSound(1.1);
+            } else {
+                btn.textContent = '🔇 Mute';
+                btn.className = 'px-2.5 py-1.5 rounded-xl bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-extrabold text-xs shadow transition';
+            }
+        }
+
+        // ========================================================
+        // KONFIGURASI & LOGIKA PERMAINAN GAPLE BANJAR
+        // ========================================================
+        const PLAYER_NAMES = ['Kamu', 'Udin', 'Acil', 'Amat'];
+
+        // Pola titik 3x3 untuk angka 0-6
+        const PIP_PATTERNS = {
+            0: [],
+            1: [4],
+            2: [2, 6],
+            3: [2, 4, 6],
+            4: [0, 2, 6, 8],
+            5: [0, 2, 4, 6, 8],
+            6: [0, 2, 3, 5, 6, 8]
+        };
+
+        let settings = {
+            targetScore: 100
+        };
+
+        let matchState = {
+            round: 1,
+            scores: [0, 0, 0, 0],
+            starterIndex: 0
+        };
+
+        let gameState = {
+            hands: [[], [], [], []],
+            chain: [],           // Jalur utama: [{ id, leftVal, rightVal, isSummaryCard }]
+            balakZone: [],       // Zona balak keluar terpisah: [{ tile, playedBy }]
+            cutPileCount: 0,     // Total kartu yang telah diringkas/dipotong
+            turn: 0,             // 0 = Kamu, 1 = Udin, 2 = Acil, 3 = Amat
+            consecutivePasses: 0,
+            roundOver: false,
+            aiTimer: null
+        };
+
+        function createDeck() {
+            const deck = [];
+            for (let i = 0; i <= 6; i++) {
+                for (let j = i; j <= 6; j++) {
+                    deck.push({
+                        id: `${i}-${j}`,
+                        a: i,
+                        b: j,
+                        isBalak: i === j,
+                        pips: i + j
+                    });
+                }
+            }
+            return deck;
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function initRound() {
+            clearTimeout(gameState.aiTimer);
+            const deck = shuffle(createDeck());
+            const hands = [
+                deck.slice(0, 7),
+                deck.slice(7, 14),
+                deck.slice(14, 21),
+                deck.slice(21, 28)
+            ];
+
+            // Urutkan kartu pemain (balak di depan, lalu poin tertinggi)
+            hands[0].sort((x, y) => (x.isBalak === y.isBalak ? y.pips - x.pips : x.isBalak ? -1 : 1));
+
+            // Ronde 1 dimulai pemilik 6-6 atau balak tertinggi
+            let starter = matchState.starterIndex;
+            if (matchState.round === 1) {
+                for (let b = 6; b >= 0; b--) {
+                    const idx = hands.findIndex(h => h.some(t => t.a === b && t.b === b));
+                    if (idx !== -1) {
+                        starter = idx;
+                        break;
+                    }
+                }
+            }
+
+            gameState = {
+                hands,
+                chain: [],
+                balakZone: [],
+                cutPileCount: 0,
+                turn: starter,
+                consecutivePasses: 0,
+                roundOver: false,
+                aiTimer: null
+            };
+
+            setLog(`Ronde ${matchState.round} dimulai! Giliran pertama: ${PLAYER_NAMES[starter]}.`);
+            renderAll();
+
+            if (gameState.turn !== 0) {
+                scheduleAITurn();
+            }
+        }
+
+        function getChainEnds() {
+            if (gameState.chain.length === 0) return { left: null, right: null };
+            return {
+                left: gameState.chain[0].leftVal,
+                right: gameState.chain[gameState.chain.length - 1].rightVal
+            };
+        }
+
+        // ========================================================
+        // ATURAN 1: BALAK HANYA KELUAR SAAT ADA ANGKA YANG SESUAI
+        // ========================================================
+        function getValidMovesForTile(tile) {
+            const { left, right } = getChainEnds();
+
+            if (tile.isBalak) {
+                // Saat meja masih kosong (pembuka ronde), boleh menurunkan balak apa saja
+                if (left === null && right === null) {
+                    return ['BALAK'];
+                }
+                // Balak HANYA bisa dikeluarkan jika angkanya cocok dengan Ujung Kiri atau Ujung Kanan
+                if (tile.a === left || tile.a === right) {
+                    return ['BALAK'];
+                }
+                return [];
+            }
+
+            // Kartu non-balak saat meja kosong
+            if (left === null) {
+                return ['OPEN'];
+            }
+
+            const sides = [];
+            if (tile.a === left || tile.b === left) sides.push('LEFT');
+            if ((tile.a === right || tile.b === right) && left !== right) sides.push('RIGHT');
+            if (left === right && (tile.a === left || tile.b === left)) {
+                return ['LEFT'];
+            }
+            return sides;
+        }
+
+        function getAllLegalMoves(playerIdx) {
+            const hand = gameState.hands[playerIdx];
+            const moves = [];
+            hand.forEach(tile => {
+                const sides = getValidMovesForTile(tile);
+                sides.forEach(side => moves.push({ tile, side }));
+            });
+            return moves;
+        }
+
+        // ========================================================
+        // ATURAN 2: SISTEM POTONG JALUR (SISA 1 KARTU UJUNG SAMA)
+        // ========================================================
+        // Mengecek apakah jalur sudah panjang (>= 4 kartu) dan angka pada ujung kiri/kanan
+        // muncul pada kartu di bagian tengah jalur sehingga dapat dipangkas menjadi
+        // 1 kartu perwakilan dengan nomor ujung kiri & kanan yang tetap sama!
+        function canCutChainToSingleCard() {
+            const chain = gameState.chain;
+            if (chain.length < 4) return null;
+
+            const { left, right } = getChainEnds();
+
+            // Periksa bagian tengah jalur (indeks 1 sampai chain.length - 2)
+            let matchedVal = null;
+            let matchedMidIdx = -1;
+
+            for (let i = 1; i <= chain.length - 2; i++) {
+                const midCard = chain[i];
+                if (midCard.leftVal === left || midCard.rightVal === left) {
+                    matchedVal = left;
+                    matchedMidIdx = i;
+                    break;
+                }
+                if (midCard.leftVal === right || midCard.rightVal === right) {
+                    matchedVal = right;
+                    matchedMidIdx = i;
+                    break;
+                }
+            }
+
+            if (matchedVal === null) return null;
+
+            return {
+                leftEnd: left,
+                rightEnd: right,
+                matchedVal,
+                matchedMidIdx,
+                removedCount: chain.length - 1
+            };
+        }
+
+        function executeCutToSingleCard() {
+            if (gameState.roundOver) return;
+            const cutInfo = canCutChainToSingleCard();
+            if (!cutInfo) return;
+
+            playCutSound();
+
+            // Pangkas seluruh jalur panjang sehingga tersisa 1 kartu utama
+            // dengan ujung kiri = cutInfo.leftEnd dan ujung kanan = cutInfo.rightEnd!
+            gameState.cutPileCount += cutInfo.removedCount;
+            gameState.chain = [{
+                id: `cut-${cutInfo.leftEnd}-${cutInfo.rightEnd}`,
+                leftVal: cutInfo.leftEnd,
+                rightVal: cutInfo.rightEnd,
+                isSummaryCard: true
+            }];
+
+            // Tampilkan animasi visual Potong Jalur
+            const overlay = document.getElementById('cut-animation-overlay');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+            }, 1400);
+
+            const actor = PLAYER_NAMES[gameState.turn];
+            setLog(`✂️ ${actor} MEMOTONG JALUR (angka tengah ${cutInfo.matchedVal} sama dengan ujung)! Jalur diringkas menjadi 1 kartu [${cutInfo.leftEnd}|${cutInfo.rightEnd}].`);
+            renderAll();
+        }
+
+        // ========================================================
+        // EKSEKUSI LANGKAH PEMAIN & AI
+        // ========================================================
+        function playTile(playerIdx, tileId, side) {
+            if (gameState.roundOver || gameState.turn !== playerIdx) return;
+
+            const hand = gameState.hands[playerIdx];
+            const tileIdx = hand.findIndex(t => t.id === tileId);
+            if (tileIdx === -1) return;
+
+            const tile = hand[tileIdx];
+            const validSides = getValidMovesForTile(tile);
+            if (!validSides.includes(side)) return;
+
+            // Mainkan efek suara "CTAK!"
+            playCtakSound(tile.isBalak ? 1.15 : 1.0);
+
+            hand.splice(tileIdx, 1);
+            gameState.consecutivePasses = 0;
+
+            if (side === 'BALAK') {
+                // Balak masuk ke Zona Balak Keluar (terpisah dari jalur utama)
+                gameState.balakZone.push({ tile, playedBy: playerIdx });
+                setLog(`💎 ${PLAYER_NAMES[playerIdx]} mengeluarkan Balak [${tile.a}|${tile.b}] ke Zona Balak (ujung jalur tetap).`);
+            } else if (side === 'OPEN') {
+                gameState.chain.push({
+                    id: tile.id,
+                    leftVal: tile.a,
+                    rightVal: tile.b,
+                    isSummaryCard: false
+                });
+                setLog(`${PLAYER_NAMES[playerIdx]} membuka jalur dengan [${tile.a}|${tile.b}].`);
+            } else if (side === 'LEFT') {
+                const { left } = getChainEnds();
+                const newLeft = tile.a === left ? tile.b : tile.a;
+                gameState.chain.unshift({
+                    id: tile.id,
+                    leftVal: newLeft,
+                    rightVal: left,
+                    isSummaryCard: false
+                });
+                setLog(`${PLAYER_NAMES[playerIdx]} menyambung [${tile.a}|${tile.b}] di Ujung Kiri (jadi ${newLeft}).`);
+            } else if (side === 'RIGHT') {
+                const { right } = getChainEnds();
+                const newRight = tile.a === right ? tile.b : tile.a;
+                gameState.chain.push({
+                    id: tile.id,
+                    leftVal: right,
+                    rightVal: newRight,
+                    isSummaryCard: false
+                });
+                setLog(`${PLAYER_NAMES[playerIdx]} menyambung [${tile.a}|${tile.b}] di Ujung Kanan (jadi ${newRight}).`);
+            }
+
+            // Cek jika kartu habis
+            if (hand.length === 0) {
+                finishRound('HABIS', playerIdx);
+                return;
+            }
+
+            advanceTurn();
+        }
+
+        function passTurn(playerIdx) {
+            if (gameState.roundOver || gameState.turn !== playerIdx) return;
+
+            gameState.consecutivePasses++;
+            setLog(`⏭️ ${PLAYER_NAMES[playerIdx]} LEWAT (tidak ada angka cocok).`);
+
+            // Jika ke-4 pemain lewat berturut-turut -> GUPLAH!
+            if (gameState.consecutivePasses >= 4) {
+                finishRound('GUPLAH', null);
+                return;
+            }
+
+            advanceTurn();
+        }
+
+        function advanceTurn() {
+            gameState.turn = (gameState.turn + 1) % 4;
+            renderAll();
+
+            if (gameState.turn !== 0 && !gameState.roundOver) {
+                scheduleAITurn();
+            }
+        }
+
+        // ========================================================
+        // KECERDASAN BUATAN AI (UDIN, ACIL, AMAT)
+        // ========================================================
+        function scheduleAITurn() {
+            clearTimeout(gameState.aiTimer);
+            gameState.aiTimer = setTimeout(() => {
+                runAITurn(gameState.turn);
+            }, 950);
+        }
+
+        function runAITurn(aiIdx) {
+            if (gameState.roundOver || gameState.turn !== aiIdx) return;
+
+            // AI otomatis memotong jalur jika meja mulai panjang (>= 5 kartu) dan syarat terpenuhi
+            const cutInfo = canCutChainToSingleCard();
+            if (cutInfo && gameState.chain.length >= 5 && Math.random() < 0.75) {
+                executeCutToSingleCard();
+            }
+
+            const legalMoves = getAllLegalMoves(aiIdx);
+            if (legalMoves.length === 0) {
+                passTurn(aiIdx);
+                return;
+            }
+
+            const hand = gameState.hands[aiIdx];
+            const suitCounts = [0, 0, 0, 0, 0, 0, 0];
+            hand.forEach(t => {
+                suitCounts[t.a]++;
+                if (!t.isBalak) suitCounts[t.b]++;
+            });
+
+            legalMoves.sort((m1, m2) => {
+                const score = (m) => {
+                    let s = m.tile.pips;
+                    // Prioritaskan membuang balak saat angkanya sedang terbuka
+                    if (m.side === 'BALAK') {
+                        s += 24 + (m.tile.a === 0 ? 18 : m.tile.pips);
+                    } else {
+                        s += suitCounts[m.tile.a] * 4 + suitCounts[m.tile.b] * 4;
+                    }
+                    return s;
+                };
+                return score(m2) - score(m1);
+            });
+
+            const chosen = legalMoves[0];
+            playTile(aiIdx, chosen.tile.id, chosen.side);
+        }
+
+        // ========================================================
+        // INTERAKSI KLIK KARTU PEMAIN
+        // ========================================================
+        function onPlayerCardClick(tileId) {
+            ensureAudioCtx();
+            if (gameState.roundOver || gameState.turn !== 0) return;
+
+            const tile = gameState.hands[0].find(t => t.id === tileId);
+            if (!tile) return;
+
+            const validSides = getValidMovesForTile(tile);
+            if (validSides.length === 0) return;
+
+            if (validSides.length === 1) {
+                playTile(0, tileId, validSides[0]);
+            } else {
+                const { left, right } = getChainEnds();
+                document.getElementById('side-choice-desc').textContent =
+                    `Kartu [${tile.a} | ${tile.b}] cocok di Ujung Kiri (${left}) maupun Ujung Kanan (${right}).`;
+
+                const btnL = document.getElementById('choose-left-btn');
+                const btnR = document.getElementById('choose-right-btn');
+
+                btnL.onclick = () => {
+                    closeModal('side-choice-modal');
+                    playTile(0, tileId, 'LEFT');
+                };
+                btnR.onclick = () => {
+                    closeModal('side-choice-modal');
+                    playTile(0, tileId, 'RIGHT');
+                };
+
+                openModal('side-choice-modal');
+            }
+        }
+
+        function playerPass() {
+            ensureAudioCtx();
+            if (gameState.roundOver || gameState.turn !== 0) return;
+            if (getAllLegalMoves(0).length > 0) return;
+            passTurn(0);
+        }
+
+        // ========================================================
+        // PERHITUNGAN GUPLAH & MANYARATUS (100 POIN)
+        // ========================================================
+        function calculateHandPenalty(hand, isGuplah) {
+            return hand.reduce((total, tile) => {
+                if (tile.a === 0 && tile.b === 0) return total + 25; // Balak 0-0 = 25 poin
+                if (tile.isBalak && isGuplah) return total + (tile.pips * 2); // Balak lain 2x saat Guplah
+                return total + tile.pips;
+            }, 0);
+        }
+
+        function finishRound(reason, winnerIdx) {
+            gameState.roundOver = true;
+            clearTimeout(gameState.aiTimer);
+            playWinSound();
+
+            const isGuplah = reason === 'GUPLAH';
+            const penalties = gameState.hands.map(h => calculateHandPenalty(h, isGuplah));
+
+            if (isGuplah) {
+                let minPen = Infinity;
+                winnerIdx = 0;
+                penalties.forEach((p, idx) => {
+                    if (p < minPen) {
+                        minPen = p;
+                        winnerIdx = idx;
+                    }
+                });
+            }
+
+            let pointsEarned = 0;
+            penalties.forEach((p, idx) => {
+                if (idx !== winnerIdx) pointsEarned += p;
+            });
+
+            matchState.scores[winnerIdx] += pointsEarned;
+            matchState.starterIndex = winnerIdx;
+
+            const isManyaratus = matchState.scores[winnerIdx] >= settings.targetScore;
+
+            const badgeEl = document.getElementById('round-end-badge');
+            const titleEl = document.getElementById('round-end-title');
+            const subEl = document.getElementById('round-end-subtitle');
+            const detailsEl = document.getElementById('round-end-details');
+            const scoresEl = document.getElementById('round-end-scores');
+            const nextBtn = document.getElementById('next-round-btn');
+
+            if (isManyaratus) {
+                badgeEl.textContent = `🏆 MANYARATUS (${settings.targetScore}+ POIN)!`;
+                titleEl.textContent = `${PLAYER_NAMES[winnerIdx]} JUARA BESAR!`;
+                subEl.textContent = `Mencapai ${matchState.scores[winnerIdx]} poin dan memenangkan pertandingan!`;
+                nextBtn.textContent = '🔄 Main Pertandingan Baru';
+                nextBtn.onclick = () => {
+                    closeModal('round-end-modal');
+                    resetFullMatch();
+                };
+            } else {
+                badgeEl.textContent = isGuplah ? '🔒 GUPLAH (BUNTU TOTAL)' : '🎉 KARTU HABIS';
+                titleEl.textContent = `${PLAYER_NAMES[winnerIdx]} Menang (+${pointsEarned} Poin)`;
+                subEl.textContent = isGuplah
+                    ? `Semua pemain buntu! ${PLAYER_NAMES[winnerIdx]} menang dengan sisa poin terkecil (${penalties[winnerIdx]} poin).`
+                    : `${PLAYER_NAMES[winnerIdx]} menghabiskan seluruh kartunya lebih dulu!`;
+                nextBtn.textContent = `Lanjut Ronde ${matchState.round + 1} ➡️`;
+                nextBtn.onclick = () => {
+                    closeModal('round-end-modal');
+                    matchState.round++;
+                    initRound();
+                };
+            }
+
+            detailsEl.innerHTML = PLAYER_NAMES.map((name, idx) => {
+                const hand = gameState.hands[idx];
+                const cardsStr = hand.length === 0
+                    ? '<span class="text-emerald-400 font-bold">Habis (0)</span>'
+                    : hand.map(t => `[${t.a}|${t.b}]`).join(' ');
+                return `
+                    <div class="flex items-center justify-between gap-2 py-1 border-b border-white/10 last:border-0">
+                        <div>
+                            <span class="font-extrabold ${idx === winnerIdx ? 'text-amber-300' : 'text-slate-200'}">${name}:</span>
+                            <span class="text-slate-300 ml-1">${cardsStr}</span>
+                        </div>
+                        <span class="font-black ${idx === winnerIdx ? 'text-emerald-400' : 'text-rose-400'}">
+                            ${idx === winnerIdx ? `+${pointsEarned}` : `${penalties[idx]} pt`}
+                        </span>
+                    </div>
+                `;
+            }).join('');
+
+            scoresEl.innerHTML = PLAYER_NAMES.map((name, idx) => `
+                <div class="bg-black/45 border ${idx === winnerIdx ? 'border-amber-400' : 'border-white/15'} rounded-xl p-2 flex items-center justify-between">
+                    <span class="font-bold text-slate-200">${name}</span>
+                    <span class="font-black text-amber-300">${matchState.scores[idx]} / ${settings.targetScore}</span>
+                </div>
+            `).join('');
+
+            renderAll();
+            openModal('round-end-modal');
+        }
+
+        function resetFullMatch() {
+            matchState = {
+                round: 1,
+                scores: [0, 0, 0, 0],
+                starterIndex: 0
+            };
+            closeModal('settings-modal');
+            initRound();
+        }
+
+        function updateSettings() {
+            settings.targetScore = parseInt(document.getElementById('setting-target-score').value, 10);
+            document.getElementById('target-score-label').textContent = `${settings.targetScore} Poin`;
+            renderAll();
+        }
+
+        // ========================================================
+        // RENDER VISUAL KARTU DOMINO ALA MERK 'JITAK'
+        // ========================================================
+        function renderPipGrid(num, small = false) {
+            const dots = PIP_PATTERNS[num] || [];
+            // Khas kartu Jitak: angka 1 & 4 berwarna merah menyala, sisanya biru tua pekat
+            const isRed = num === 1 || num === 4;
+            let cells = '';
+            for (let i = 0; i < 9; i++) {
+                if (dots.includes(i)) {
+                    cells += `<span class="${small ? 'pip-jitak-sm' : 'pip-jitak'} ${isRed ? 'red' : ''} m-auto"></span>`;
+                } else {
+                    cells += `<span></span>`;
+                }
+            }
+            return `<div class="grid grid-cols-3 grid-rows-3 ${small ? 'w-5 h-5 p-0.5' : 'w-8 h-8 sm:w-9 sm:h-9 p-1'}">${cells}</div>`;
+        }
+
+        // Kartu Horizontal di Jalur Meja Utama
+        function renderChainTileHTML(entry, isMidMatch) {
+            const badgeSummary = entry.isSummaryCard
+                ? '<span class="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-amber-400 text-slate-950 text-[8px] font-black px-1.5 rounded-full shadow">Sisa Potongan</span>'
+                : '';
+            const highlightMid = isMidMatch
+                ? 'ring-2 ring-amber-400'
+                : '';
+            return `
+                <div class="animate-slam shrink-0 jitak-card rounded-xl flex items-center px-1.5 py-1 ${highlightMid}">
+                    ${badgeSummary}
+                    ${renderPipGrid(entry.leftVal, true)}
+                    <div class="jitak-divider-v h-5 mx-1"></div>
+                    ${renderPipGrid(entry.rightVal, true)}
+                </div>
+            `;
+        }
+
+        // Kartu Vertikal untuk Zona Balak & Tangan Pemain
+        function renderVerticalTileHTML(tile, options = {}) {
+            const { playable = false, isBalakZone = false, onClick = '' } = options;
+
+            if (isBalakZone) {
+                return `
+                    <div class="animate-slam shrink-0 jitak-card rounded-xl flex items-center px-1.5 py-0.5">
+                        ${renderPipGrid(tile.a, true)}
+                        <div class="jitak-divider-v h-4 mx-1"></div>
+                        ${renderPipGrid(tile.b, true)}
+                    </div>
+                `;
+            }
+
+            const stateClass = playable
+                ? 'jitak-playable cursor-pointer'
+                : 'opacity-65';
+
+            return `
+                <button ${onClick ? `onclick="${onClick}"` : ''}
+                    class="jitak-card rounded-2xl p-1 sm:p-1.5 flex flex-col items-center justify-between ${stateClass}">
+                    ${renderPipGrid(tile.a, false)}
+                    <div class="jitak-divider-h w-7 sm:w-8 my-0.5"></div>
+                    ${renderPipGrid(tile.b, false)}
+                </button>
+            `;
+        }
+
+        function setLog(text) {
+            document.getElementById('last-action-log').textContent = text;
+        }
+
+        function renderAll() {
+            // 1. Header & Papan Skor Mini
+            document.getElementById('round-badge').textContent = `Ronde ${matchState.round}`;
+            document.getElementById('target-score-label').textContent = `${settings.targetScore} Poin`;
+
+            document.getElementById('scoreboard-mini').innerHTML = PLAYER_NAMES.map((name, idx) => {
+                const isTurn = gameState.turn === idx && !gameState.roundOver;
+                return `
+                    <div class="px-2 py-0.5 rounded-xl transition ${isTurn ? 'bg-amber-400 text-slate-950 font-black shadow' : 'text-slate-100 font-semibold'}">
+                        <span>${name}:</span>
+                        <span class="font-extrabold ml-0.5">${matchState.scores[idx]}</span>
+                    </div>
+                `;
+            }).join('');
+
+            // 2. Status 3 AI Lawan (Udin, Acil, Amat)
+            const aiStyles = [
+                null,
+                { active: 'bg-gradient-to-br from-sky-600 to-blue-800 border-2 border-amber-300 rounded-2xl p-2 flex items-center justify-between shadow-xl scale-[1.02] transition', idle: 'bg-gradient-to-br from-blue-900/75 to-indigo-950/85 border-2 border-sky-400/30 rounded-2xl p-2 flex items-center justify-between shadow-lg transition' },
+                { active: 'bg-gradient-to-br from-pink-600 to-rose-800 border-2 border-amber-300 rounded-2xl p-2 flex items-center justify-between shadow-xl scale-[1.02] transition', idle: 'bg-gradient-to-br from-rose-900/75 to-pink-950/85 border-2 border-pink-400/30 rounded-2xl p-2 flex items-center justify-between shadow-lg transition' },
+                { active: 'bg-gradient-to-br from-amber-600 to-orange-800 border-2 border-white rounded-2xl p-2 flex items-center justify-between shadow-xl scale-[1.02] transition', idle: 'bg-gradient-to-br from-amber-900/75 to-orange-950/85 border-2 border-amber-400/30 rounded-2xl p-2 flex items-center justify-between shadow-lg transition' }
+            ];
+
+            for (let i = 1; i <= 3; i++) {
+                const box = document.getElementById(`ai-box-${i}`);
+                const countEl = document.getElementById(`ai-count-${i}`);
+                const statusEl = document.getElementById(`ai-status-${i}`);
+                countEl.textContent = gameState.hands[i].length;
+
+                if (gameState.turn === i && !gameState.roundOver) {
+                    box.className = aiStyles[i].active;
+                    statusEl.textContent = 'Sedang jalan...';
+                } else {
+                    box.className = aiStyles[i].idle;
+                    statusEl.textContent = `${gameState.hands[i].length} kartu`;
+                }
+            }
+
+            // 3. Zona Balak Keluar Terpisah
+            const balakZoneEl = document.getElementById('balak-zone');
+            document.getElementById('balak-count-badge').textContent = `${gameState.balakZone.length} / 7 Balak`;
+            if (gameState.balakZone.length === 0) {
+                balakZoneEl.innerHTML = `<span class="text-[11px] text-cyan-200/70 italic">Belum ada balak keluar...</span>`;
+            } else {
+                balakZoneEl.innerHTML = gameState.balakZone.map(b =>
+                    renderVerticalTileHTML(b.tile, { isBalakZone: true })
+                ).join('');
+            }
+
+            // 4. Ujung Jalur, Tombol Potong Jalur & Rantai Kartu Utama
+            const { left, right } = getChainEnds();
+            document.getElementById('left-end-badge').textContent = left !== null ? left : '-';
+            document.getElementById('right-end-badge').textContent = right !== null ? right : '-';
+            document.getElementById('cut-pile-info').textContent = `✂️ Potongan: ${gameState.cutPileCount}`;
+
+            const turnBanner = document.getElementById('turn-banner');
+            const tableHint = document.getElementById('table-hint');
+            if (gameState.roundOver) {
+                turnBanner.textContent = 'Ronde Selesai';
+                tableHint.textContent = 'Lihat rincian skor ronde';
+            } else if (gameState.turn === 0) {
+                turnBanner.textContent = '✨ Giliran Kamu!';
+                tableHint.textContent = 'Ketuk kartu Jitak menyala di bawah';
+            } else {
+                turnBanner.textContent = `Giliran ${PLAYER_NAMES[gameState.turn]}...`;
+                tableHint.textContent = 'Menunggu lawan menurunkan kartu';
+            }
+
+            // Tombol Potong Jalur (Sisa 1 kartu yang nomor ujungnya sama)
+            const cutInfo = canCutChainToSingleCard();
+            const cutBar = document.getElementById('cut-action-bar');
+            if (gameState.turn === 0 && !gameState.roundOver && cutInfo) {
+                cutBar.classList.remove('hidden');
+                cutBar.innerHTML = `
+                    <button onclick="executeCutToSingleCard()"
+                        class="btn-cut-pulse px-4 py-2 rounded-full bg-gradient-to-r from-amber-400 via-orange-500 to-rose-600 hover:brightness-110 active:scale-95 text-white font-black text-xs shadow-xl border-2 border-white flex items-center gap-2 transition">
+                        <span>✂️ POTONG JALUR (Sisa 1 Kartu [${cutInfo.leftEnd}|${cutInfo.rightEnd}])</span>
+                    </button>
+                `;
+            } else {
+                cutBar.classList.add('hidden');
+                cutBar.innerHTML = '';
+            }
+
+            // Render Rantai Kartu Tengah
+            const chainContainer = document.getElementById('chain-container');
+            if (gameState.chain.length === 0) {
+                chainContainer.innerHTML = `
+                    <div class="text-center w-full text-xs sm:text-sm text-emerald-200/80">
+                        Meja jalur utama masih kosong. Turunkan kartu pertama!
+                    </div>
+                `;
+            } else {
+                const midIdx = cutInfo ? cutInfo.matchedMidIdx : -1;
+                chainContainer.innerHTML = gameState.chain.map((entry, idx) =>
+                    renderChainTileHTML(entry, idx === midIdx)
+                ).join('');
+            }
+
+            // 5. Kartu Pemain di Bawah
+            const myHand = gameState.hands[0];
+            const myPips = myHand.reduce((sum, t) => sum + t.pips, 0);
+            document.getElementById('my-pip-total').textContent = `${myPips} Poin`;
+
+            const isMyTurn = gameState.turn === 0 && !gameState.roundOver;
+            const myLegalMoves = isMyTurn ? getAllLegalMoves(0) : [];
+
+            const passBtn = document.getElementById('pass-btn');
+            if (isMyTurn && myLegalMoves.length === 0) {
+                passBtn.classList.remove('hidden');
+            } else {
+                passBtn.classList.add('hidden');
+            }
+
+            const playerHandEl = document.getElementById('player-hand');
+            if (myHand.length === 0) {
+                playerHandEl.innerHTML = `<span class="text-xs text-amber-300 font-extrabold">Kartu kamu sudah habis!</span>`;
+            } else {
+                playerHandEl.innerHTML = myHand.map(tile => {
+                    const canPlay = isMyTurn && getValidMovesForTile(tile).length > 0;
+                    return renderVerticalTileHTML(tile, {
+                        playable: canPlay,
+                        onClick: canPlay ? `onPlayerCardClick('${tile.id}')` : ''
+                    });
+                }).join('');
+            }
+        }
+
+        function openModal(id) {
+            const el = document.getElementById(id);
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+        }
+
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+        }
+
+        window.onload = () => {
+            initRound();
+        };
+    </script>
+</body>
+</html>
