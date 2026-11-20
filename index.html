@@ -1,0 +1,797 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Gaple Banjar</title>
+<style>
+:root{--felt:#14684a;--felt2:#0a422f;--gold:#f3c969;--ink:#17231e;--cut:#ff6b4a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;height:100%;background:#06231b;color:#f7f3e8;font-family:system-ui,-apple-system,Segoe UI,sans-serif;overflow:hidden}
+
+/* Layout layar penuh terpusat: Header tipis + Papan 3:4 di tengah + Barisan kartu vertikal di bawah */
+.app{
+  height:100dvh;
+  max-width:520px;
+  margin:0 auto;
+  padding:8px 10px env(safe-area-inset-bottom, 10px);
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+}
+
+.topbar{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#092c22;
+  border:1px solid #28634e;
+  border-radius:12px;
+  padding:6px 10px;
+  flex-shrink:0;
+}
+.topbar h1{margin:0;font-size:15px;letter-spacing:.4px;color:var(--gold)}
+.top-actions{display:flex;gap:5px;align-items:center}
+.mini-btn{border:1px solid #3c755c;background:#103d30;color:#e7f3ec;border-radius:8px;padding:5px 7px;font-size:11px;font-weight:700;cursor:pointer}
+.mini-btn:hover{background:#185241}
+.mini-btn.active-music{border-color:var(--gold);background:#1a5c47;color:#ffe9ad}
+
+/* Papan Permainan Besar 3:4 tepat di tengah layar */
+.board-wrap{
+  flex:1;
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:0;
+}
+.table{
+  width:100%;
+  height:100%;
+  max-height:100%;
+  aspect-ratio:3 / 4;
+  max-width:min(100%, calc((100dvh - 220px) * 0.75));
+  background:radial-gradient(ellipse at center,var(--felt),var(--felt2));
+  border:6px solid #70452a;
+  border-radius:24px;
+  padding:10px;
+  box-shadow:0 12px 28px #0008, inset 0 0 24px #0004;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  gap:8px;
+}
+
+.opponents{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.player{
+  background:#07261ed9;
+  border:1px solid #5d967b;
+  border-radius:11px;
+  padding:6px 4px;
+  text-align:center;
+  transition:.2s;
+}
+.player.active{outline:2.5px solid var(--gold);background:#0c3b2f}
+.player strong{display:block;font-size:12px}
+.score-badge{display:inline-block;margin-top:2px;padding:1px 6px;border-radius:99px;background:#134e3b;border:1px solid #f3c96988;color:#ffe4a2;font-size:10px;font-weight:700}
+.muted{font-size:10px;color:#c6d9ce;display:block;margin-top:2px}
+
+.center{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:8px;
+  min-height:0;
+  overflow:hidden;
+}
+.ends{
+  font-size:11px;
+  color:#ffe9ad;
+  font-weight:700;
+  background:#06231ba8;
+  padding:4px 10px;
+  border-radius:99px;
+  border:1px solid #4e876c;
+}
+.chain{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  flex-wrap:wrap;
+  max-width:100%;
+  padding:4px;
+  overflow-y:auto;
+}
+.domino{
+  width:56px;
+  height:30px;
+  background:#fffdf4;
+  color:#17231e;
+  border:2px solid #d9d2c1;
+  border-radius:6px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:2px 3px;
+  box-shadow:0 2px 4px #0005;
+  flex-shrink:0;
+}
+.domino i{height:20px;border-left:1.5px solid #b5ad9c;flex-shrink:0}
+.domino.double{border-color:#f0c45c;background:#fff5d8}
+.domino.cut-result{border-color:#ff6b4a;box-shadow:0 0 12px #ff6b4a99}
+
+.sidepile{
+  font-size:11px;
+  color:#f8e5aa;
+  text-align:center;
+  background:#06231b88;
+  padding:3px 8px;
+  border-radius:8px;
+}
+
+.notice{
+  padding:8px 10px;
+  background:#07261ee6;
+  border:1px solid #3c755c;
+  border-radius:12px;
+  text-align:center;
+  font-size:12px;
+  line-height:1.35;
+  min-height:38px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* Barisan kartu pemain vertikal berjajar di bagian bawah agar semua muat di layar */
+.bottom-dock{
+  width:100%;
+  background:#0c3529;
+  border:1.5px solid #39785d;
+  border-radius:16px;
+  padding:8px 10px;
+  flex-shrink:0;
+  box-shadow:0 -4px 16px #0005;
+}
+.dock-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:6px;
+  margin-bottom:6px;
+}
+.me-pill{
+  font-size:12px;
+  font-weight:700;
+  color:#ffe4a2;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.me-pill.active-turn{
+  background:#175944;
+  padding:2px 8px;
+  border-radius:99px;
+  outline:1.5px solid var(--gold);
+}
+.quick-controls{
+  display:flex;
+  gap:5px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.btn{
+  border:0;
+  border-radius:8px;
+  padding:6px 10px;
+  font-weight:750;
+  cursor:pointer;
+  background:var(--gold);
+  color:#30230b;
+  font-size:11px;
+  transition:.15s;
+}
+.btn.secondary{background:#d9e6dc;color:#18382b}
+.btn.cut{background:linear-gradient(135deg,#ff7e5f,#eb4d30);color:#fff;box-shadow:0 2px 8px #eb4d3077}
+.btn:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+
+/* Susunan kartu tangan vertikal (berdiri) agar 7 kartu muat sejajar tanpa geser layar */
+.hand{
+  display:grid;
+  grid-template-columns:repeat(7, minmax(0, 1fr));
+  gap:5px;
+  justify-items:center;
+  align-items:center;
+  padding:6px 2px 2px;
+  min-height:78px;
+}
+.tile{
+  width:100%;
+  max-width:46px;
+  height:74px;
+  border:2px solid #ddd5c5;
+  border-radius:8px;
+  background:#fffdf4;
+  color:#14251d;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:space-between;
+  padding:4px 3px;
+  cursor:pointer;
+  box-shadow:0 3px 5px #0004;
+  transition:.15s;
+}
+.tile:hover:not(:disabled){transform:translateY(-5px);border-color:var(--gold)}
+.tile.playable:not(:disabled){border-color:#5ef2a6;box-shadow:0 0 8px #5ef2a666}
+.tile.selected{outline:2.5px solid var(--gold);transform:translateY(-8px);background:#fff9e6}
+.tile:disabled{opacity:.45;cursor:not-allowed}
+.tile .sep{border-top:1.5px solid #b5ad9c;width:82%;height:0;flex-shrink:0}
+
+/* Grid 3x3 presisi agar biji tidak pernah keluar kotak */
+.half{width:22px;height:22px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);place-items:center;flex-shrink:0}
+.tile .half{width:27px;height:27px}
+.dot{width:4.5px;height:4.5px;border-radius:50%;background:#1a2433}
+.tile .dot{width:5.5px;height:5.5px}
+.dot.red{background:#c82333}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <h1>🁣 GAPLE BANJAR</h1>
+    <div class="top-actions">
+      <button class="mini-btn" id="start">Mulai ronde</button>
+      <button class="mini-btn" id="resetScore">Reset</button>
+      <button class="mini-btn active-music" id="bgm" title="Lagu Latar C.A.S">🎵 C.A.S</button>
+      <button class="mini-btn" id="nextTrack" title="Ganti Lagu C.A.S">⏭</button>
+      <button class="mini-btn" id="sound" title="Efek Suara">🔊</button>
+    </div>
+  </header>
+
+  <div class="board-wrap">
+    <section class="table">
+      <div class="opponents" id="opponents"></div>
+      <div class="center">
+        <div class="ends" id="ends">Target Manyaratus: 100 Poin</div>
+        <div class="chain" id="chain"><span class="muted">Tekan “Mulai ronde” untuk mulai</span></div>
+        <div class="sidepile" id="doubles" style="display:none"></div>
+      </div>
+      <div class="notice" id="notice">Selamat datang! Tekan <b>Mulai ronde</b> untuk bermain.</div>
+    </section>
+  </div>
+
+  <section class="bottom-dock">
+    <div class="dock-head">
+      <div class="me-pill" id="mePill">Kamu • 🏆 0/100</div>
+      <div class="quick-controls">
+        <button class="btn cut" id="cut" disabled>✂️ Potong</button>
+        <button class="btn secondary" id="left" disabled>◀ Kiri</button>
+        <button class="btn secondary" id="right" disabled>Kanan ▶</button>
+        <button class="btn secondary" id="pass" disabled>Lewat</button>
+      </div>
+    </div>
+    <div class="hand" id="hand"></div>
+  </section>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let hands=[],chain=[],doubles=[],turn=0,selected=-1,started=false,passes=0,sound=true,bgmOn=true,locked=false;
+let scores=[0,0,0,0],nextStarter=0;
+const TARGET_SCORE=100;
+const names=['Kamu','Bot 1','Bot 2','Bot 3'];
+
+// === MESIN AUDIO DREAMPOP / SLOWCORE ALA CIGARETTES AFTER SEX (C.A.S) ===
+let audioCtx=null, masterBus=null, bgmTimer=null, bgmStep=0, currentTrack=0;
+
+function getCtx(){
+  if(!audioCtx){
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(AC){
+      audioCtx=new AC();
+      // Efek reverb & warm lowpass filter khas ambient dream pop C.A.S
+      masterBus=audioCtx.createGain();
+      masterBus.gain.value=0.85;
+
+      const filter=audioCtx.createBiquadFilter();
+      filter.type='lowpass';
+      filter.frequency.value=1350;
+
+      const delay=audioCtx.createDelay();
+      delay.delayTime.value=0.38;
+      const feedback=audioCtx.createGain();
+      feedback.gain.value=0.42;
+      const wet=audioCtx.createGain();
+      wet.gain.value=0.45;
+
+      delay.connect(feedback);
+      feedback.connect(delay);
+      delay.connect(wet);
+
+      masterBus.connect(filter);
+      filter.connect(audioCtx.destination);
+      filter.connect(delay);
+      wet.connect(audioCtx.destination);
+    }
+  }
+  if(audioCtx && audioCtx.state==='suspended')audioCtx.resume();
+  return audioCtx;
+}
+
+// Playlist aransemen instrumental ambient slow-tempo (76 BPM) terinspirasi gaya C.A.S
+const CAS_TRACKS=[
+  {
+    name:'Apocalypse (Ambient)',
+    tempoMs:420,
+    chords:[
+      [146.83, 220.00, 293.66, 369.99], // Dmaj7
+      [110.00, 164.81, 220.00, 277.18], // Amaj7
+      [123.47, 185.00, 246.94, 293.66], // Bm7
+      [98.00,  146.83, 196.00, 246.94]  // Gmaj7
+    ],
+    melody:[
+      587.33, 0, 554.37, 493.88, 440.00, 0, 369.99, 0,
+      440.00, 0, 493.88, 440.00, 369.99, 0, 329.63, 0,
+      369.99, 0, 440.00, 369.99, 293.66, 0, 246.94, 0,
+      293.66, 0, 369.99, 329.63, 293.66, 0, 0, 0
+    ]
+  },
+  {
+    name:'Sunsetz (Dream)',
+    tempoMs:440,
+    chords:[
+      [130.81, 196.00, 261.63, 329.63], // Cmaj7
+      [110.00, 164.81, 220.00, 261.63], // Am7
+      [87.31,  130.81, 174.61, 220.00], // Fmaj7
+      [98.00,  146.83, 196.00, 246.94]  // G6
+    ],
+    melody:[
+      523.25, 0, 493.88, 392.00, 440.00, 0, 329.63, 0,
+      392.00, 0, 329.63, 293.66, 261.63, 0, 0, 0,
+      329.63, 0, 392.00, 440.00, 523.25, 0, 493.88, 0,
+      392.00, 0, 329.63, 293.66, 261.63, 0, 0, 0
+    ]
+  },
+  {
+    name:'K. (Nocturne)',
+    tempoMs:460,
+    chords:[
+      [164.81, 246.94, 329.63, 392.00], // Em7
+      [130.81, 196.00, 261.63, 329.63], // Cmaj7
+      [98.00,  146.83, 196.00, 246.94], // Gmaj7
+      [146.83, 220.00, 293.66, 369.99]  // D6
+    ],
+    melody:[
+      493.88, 0, 440.00, 392.00, 329.63, 0, 293.66, 0,
+      329.63, 0, 392.00, 440.00, 493.88, 0, 0, 0,
+      587.33, 0, 493.88, 440.00, 392.00, 0, 369.99, 0,
+      329.63, 0, 293.66, 246.94, 246.94, 0, 0, 0
+    ]
+  },
+  {
+    name:'Sweet (Slow)',
+    tempoMs:450,
+    chords:[
+      [174.61, 261.63, 349.23, 440.00], // Fmaj7
+      [146.83, 220.00, 293.66, 349.23], // Dm7
+      [110.00, 164.81, 220.00, 261.63], // Am7
+      [130.81, 196.00, 261.63, 329.63]  // Cmaj7
+    ],
+    melody:[
+      440.00, 0, 523.25, 493.88, 440.00, 0, 349.23, 0,
+      392.00, 0, 440.00, 392.00, 329.63, 0, 261.63, 0,
+      293.66, 0, 329.63, 349.23, 392.00, 0, 329.63, 0,
+      261.63, 0, 293.66, 261.63, 261.63, 0, 0, 0
+    ]
+  }
+];
+
+function playCASNote(freq, dur, vol, type='sine', detune=0){
+  if(!freq || !bgmOn)return;
+  try{
+    const c=getCtx();
+    if(!c || !masterBus)return;
+    const now=c.currentTime;
+    const o=c.createOscillator(), g=c.createGain();
+    o.type=type;
+    o.frequency.setValueAtTime(freq, now);
+    if(detune)o.detune.setValueAtTime(detune, now);
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.exponentialRampToValueAtTime(vol, now + 0.14);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+    o.connect(g); g.connect(masterBus);
+    o.start(now); o.stop(now + dur + 0.05);
+  }catch(e){}
+}
+
+function startBGM(){
+  if(!bgmOn)return;
+  stopBGM();
+  getCtx();
+  const tr=CAS_TRACKS[currentTrack];
+  bgmTimer=setInterval(()=>{
+    if(!bgmOn)return;
+    const step=bgmStep % 32;
+    const chordIdx=Math.floor(step / 8);
+    const chord=tr.chords[chordIdx];
+
+    // Pad akor lembut & bass warm di awal setiap bar (8 ketukan)
+    if(step % 8 === 0){
+      playCASNote(chord[0] / 2, 3.2, 0.075, 'sine'); // Sub bass
+      playCASNote(chord[1], 3.1, 0.028, 'triangle', -4);
+      playCASNote(chord[2], 3.1, 0.028, 'triangle', 4);
+      playCASNote(chord[3], 3.1, 0.024, 'sine');
+    }
+    // Petikan gitar reverb ala C.A.S di ketukan genap
+    if(step % 2 === 0){
+      const arpNote=chord[(step / 2) % chord.length];
+      playCASNote(arpNote, 1.1, 0.026, 'sine', 6);
+    }
+    // Melodi vokal/gitar utama yang melankolis
+    const mel=tr.melody[step];
+    if(mel){
+      playCASNote(mel, 1.35, 0.042, 'triangle', -3);
+      playCASNote(mel, 1.35, 0.025, 'sine', 5);
+    }
+    bgmStep++;
+  }, tr.tempoMs);
+}
+
+function stopBGM(){
+  if(bgmTimer){
+    clearInterval(bgmTimer);
+    bgmTimer=null;
+  }
+}
+
+function playSound(type='ctak'){
+  if(!sound)return;
+  try{
+    const c=getCtx();
+    if(!c)return;
+    const now=c.currentTime;
+    const o=c.createOscillator(),g=c.createGain();
+    if(type==='cut'){
+      o.type='sawtooth';
+      o.frequency.setValueAtTime(780,now);
+      o.frequency.exponentialRampToValueAtTime(220,now+.12);
+      g.gain.setValueAtTime(.0001,now);
+      g.gain.exponentialRampToValueAtTime(.22,now+.01);
+      g.gain.exponentialRampToValueAtTime(.0001,now+.14);
+      o.connect(g);g.connect(c.destination);o.start(now);o.stop(now+.15);
+    }else if(type==='win'){
+      [523.25,659.25,783.99,1046.5].forEach((f,k)=>{
+        const osc=c.createOscillator(),gn=c.createGain();
+        osc.type='triangle';
+        osc.frequency.setValueAtTime(f,now+k*0.09);
+        gn.gain.setValueAtTime(.0001,now+k*0.09);
+        gn.gain.exponentialRampToValueAtTime(.14,now+k*0.09+0.02);
+        gn.gain.exponentialRampToValueAtTime(.0001,now+k*0.09+0.25);
+        osc.connect(gn);gn.connect(c.destination);
+        osc.start(now+k*0.09);osc.stop(now+k*0.09+0.27);
+      });
+    }else{
+      o.type='triangle';
+      o.frequency.setValueAtTime(520,now);
+      o.frequency.exponentialRampToValueAtTime(170,now+.055);
+      g.gain.setValueAtTime(.0001,now);
+      g.gain.exponentialRampToValueAtTime(.22,now+.006);
+      g.gain.exponentialRampToValueAtTime(.0001,now+.09);
+      o.connect(g);g.connect(c.destination);o.start(now);o.stop(now+.1);
+    }
+  }catch(e){}
+}
+
+const PIP_MAP={
+  0:[],
+  1:[4],
+  2:[0,8],
+  3:[0,4,8],
+  4:[0,2,6,8],
+  5:[0,2,4,6,8],
+  6:[0,2,3,5,6,8]
+};
+
+function pip(n){
+  const active=PIP_MAP[n]||[];
+  const isRed=(n===1||n===4);
+  let cells='';
+  for(let i=0;i<9;i++){
+    cells+=active.includes(i)?`<span class="dot${isRed?' red':''}"></span>`:'<span></span>';
+  }
+  return `<div class="half">${cells}</div>`;
+}
+
+function tileHTML(a,b,cls='domino'){return `<div class="${cls}${a===b?' double':''}">${pip(a)}<i></i>${pip(b)}</div>`}
+function allTiles(){let a=[];for(let x=0;x<=6;x++)for(let y=x;y<=6;y++)a.push([x,y]);return a}
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function say(t){$('notice').innerHTML=t}
+
+function start(){
+  if(bgmOn && !bgmTimer)startBGM();
+  if(Math.max(...scores)>=TARGET_SCORE){
+    scores=[0,0,0,0];
+    nextStarter=0;
+  }
+  hands=[[],[],[],[]];chain=[];doubles=[];turn=nextStarter;selected=-1;passes=0;locked=false;
+  let deck=shuffle(allTiles());
+  for(let i=0;i<28;i++)hands[i%4].push(deck[i]);
+  hands.forEach(h=>h.sort((a,b)=>(a[0]+a[1])-(b[0]+b[1])));
+  started=true;
+  $('start').textContent='Ronde baru';
+  say(`Kartu dibagikan! <b>${names[turn]}</b> jalan pertama.`);
+  render();setControls();
+  if(turn!==0)setTimeout(botTurn,700);
+}
+
+function canCut(){
+  if(chain.length<4)return false;
+  const L=chain[0][0], R=chain[chain.length-1][1];
+  for(let i=1;i<chain.length-1;i++){
+    if(chain[i][0]===L||chain[i][1]===L||chain[i][0]===R||chain[i][1]===R)return true;
+  }
+  return false;
+}
+
+function performCut(byWho){
+  if(!canCut())return false;
+  const L=chain[0][0], R=chain[chain.length-1][1];
+  chain=[[L,R]];
+  playSound('cut');
+  say(`✂️ <b>${byWho}</b> memotong jalur! Tersisa 1 kartu <b>[${L} | ${R}]</b>.`);
+  render();
+  setControls();
+  return true;
+}
+
+function render(){
+  $('opponents').innerHTML=names.slice(1).map((n,i)=>`
+    <div class="player ${turn===i+1&&started&&!locked?'active':''}">
+      <strong>${n}</strong>
+      <span class="score-badge">🏆 ${scores[i+1]}/${TARGET_SCORE}</span>
+      <span class="muted">${hands[i+1]?.length??0} kartu</span>
+    </div>`).join('');
+
+  const myTurn=turn===0&&started&&!locked;
+  const mePill=$('mePill');
+  mePill.textContent=`Kamu • 🏆 ${scores[0]}/${TARGET_SCORE}${myTurn?' • Giliranmu':''}`;
+  mePill.className='me-pill'+(myTurn?' active-turn':'');
+
+  $('chain').innerHTML=chain.length
+    ? chain.map(t=>tileHTML(t[0],t[1],chain.length===1&&started?'domino cut-result':'domino')).join('')
+    : '<span class="muted">Jalur masih kosong</span>';
+
+  const dblEl=$('doubles');
+  if(doubles.length){
+    dblEl.style.display='block';
+    dblEl.textContent='Balak: '+doubles.map(t=>`${t[0]}|${t[1]}`).join(' · ');
+  }else{
+    dblEl.style.display='none';
+  }
+
+  $('ends').textContent=chain.length
+    ? `Ujung Kiri: ${chain[0][0]}   |   Ujung Kanan: ${chain[chain.length-1][1]}`
+    : `Target Manyaratus: ${TARGET_SCORE} Poin`;
+
+  $('hand').innerHTML=(hands[0]||[]).map((t,i)=>{
+    const ok=myTurn&&legal(t);
+    return `<button class="tile ${ok?'playable':''} ${selected===i?'selected':''}" data-i="${i}" ${!myTurn?'disabled':''}>${pip(t[0])}<span class="sep"></span>${pip(t[1])}</button>`;
+  }).join('');
+
+  $('hand').querySelectorAll('button').forEach(b=>b.onclick=()=>handleCardTap(+b.dataset.i));
+}
+
+function handleCardTap(idx){
+  if(turn!==0||!started||locked)return;
+  if(bgmOn && !bgmTimer)startBGM();
+  const t=hands[0][idx];
+  if(!t)return;
+  if(!legal(t)){
+    selected=-1;
+    say(`Kartu <b>${t[0]}|${t[1]}</b> tidak cocok dengan ujung (${chain[0][0]} atau ${chain[chain.length-1][1]}).`);
+    render();setControls();
+    return;
+  }
+  if(!chain.length||t[0]===t[1]){
+    place(idx,'right');
+    return;
+  }
+  const L=chain[0][0], R=chain[chain.length-1][1];
+  const fitLeft=(t[0]===L||t[1]===L);
+  const fitRight=(t[0]===R||t[1]===R);
+
+  if(fitLeft && !fitRight){
+    place(idx,'left');
+  }else if(fitRight && !fitLeft){
+    place(idx,'right');
+  }else if(fitLeft && fitRight){
+    if(L===R){
+      place(idx,'right');
+    }else{
+      selected=idx;
+      say(`Kartu <b>${t[0]}|${t[1]}</b> cocok di kedua sisi! Pilih <b>◀ Kiri (${L})</b> atau <b>Kanan (${R}) ▶</b>.`);
+      render();setControls();
+    }
+  }
+}
+
+function legal(t){
+  if(!chain.length)return true;
+  if(t[0]===t[1])return t[0]===chain[0][0]||t[0]===chain[chain.length-1][1];
+  return t.includes(chain[0][0])||t.includes(chain[chain.length-1][1]);
+}
+
+function place(idx,side){
+  let h=hands[turn],t=h[idx];
+  if(!t||!legal(t))return false;
+  h.splice(idx,1);
+  if(t[0]===t[1]){
+    doubles.push(t);
+  }else if(!chain.length){
+    chain.push(t);
+  }else if(side==='left'){
+    if(t[0]===chain[0][0])chain.unshift([t[1],t[0]]);
+    else if(t[1]===chain[0][0])chain.unshift(t);
+    else return false;
+  }else{
+    if(t[0]===chain[chain.length-1][1])chain.push(t);
+    else if(t[1]===chain[chain.length-1][1])chain.push([t[1],t[0]]);
+    else return false;
+  }
+  selected=-1;passes=0;playSound('ctak');
+  say(`<b>${names[turn]}</b> mengeluarkan <b>${t[0]}|${t[1]}</b> — ctak!`);
+  if(h.length===0){
+    render();
+    finish(turn,'habis kartu');
+    return true;
+  }
+  turn=(turn+1)%4;
+  render();setControls();
+  if(turn!==0)setTimeout(botTurn,650);
+  return true;
+}
+
+function optionsFor(h){
+  let out=[];
+  h.forEach((t,i)=>{
+    if(!chain.length)out.push({i,side:'right',t});
+    else if(t[0]===t[1]){if(legal(t))out.push({i,side:'right',t})}
+    else{
+      if(t[0]===chain[0][0]||t[1]===chain[0][0])out.push({i,side:'left',t});
+      if(t[0]===chain[chain.length-1][1]||t[1]===chain[chain.length-1][1])out.push({i,side:'right',t});
+    }
+  });
+  return out;
+}
+
+function setControls(){
+  let mine=turn===0&&started&&!locked,opts=mine?optionsFor(hands[0]):[];
+  let chosen=selected>=0?hands[0][selected]:null;
+  let ok=chosen&&legal(chosen);
+  $('cut').disabled=!mine||!canCut();
+  $('left').disabled=!mine||!ok||(!chain.length)||(chosen[0]===chosen[1])||!(chosen[0]===chain[0][0]||chosen[1]===chain[0][0]);
+  $('right').disabled=!mine||!ok||(chain.length>0&&chosen[0]!==chosen[1]&&!(chosen[0]===chain[chain.length-1][1]||chosen[1]===chain[chain.length-1][1]));
+  $('pass').disabled=!mine||opts.length>0;
+  $('start').disabled=started&&!locked;
+}
+
+function botTurn(){
+  if(!started||turn===0||locked)return;
+  if(canCut() && chain.length>=6 && Math.random()<0.65){
+    performCut(names[turn]);
+    setTimeout(botTurn,550);
+    return;
+  }
+  let h=hands[turn],opts=optionsFor(h);
+  if(opts.length){
+    opts.sort((a,b)=>(b.t[0]+b.t[1])-(a.t[0]+a.t[1]));
+    let o=opts[0];
+    place(o.i,o.side);
+  }else{
+    passes++;
+    say(`<b>${names[turn]}</b> lewat.`);
+    turn=(turn+1)%4;
+    render();
+    if(passes>=4){finishGuplah();return}
+    if(turn!==0)setTimeout(botTurn,550);
+    else{
+      setControls();
+      if(optionsFor(hands[0]).length===0){
+        say('Tidak ada kartu cocok. Tekan <b>Lewat</b>.');
+      }else{
+        say('Giliranmu! Ketuk kartu hijau untuk jalan.');
+      }
+    }
+  }
+}
+
+function handPipScore(h){
+  let hasZeroPair=h.some(t=>t[0]===0||t[1]===0);
+  return h.reduce((s,t)=>s+(t[0]===0&&t[1]===0?(hasZeroPair?0:25):t[0]+t[1]),0);
+}
+
+function awardPoints(winnerIdx, summaryPrefix){
+  let gained=0;
+  for(let i=0;i<4;i++){
+    if(i!==winnerIdx)gained+=handPipScore(hands[i]);
+  }
+  scores[winnerIdx]+=gained;
+  nextStarter=winnerIdx;
+  locked=true;
+  playSound('win');
+  render();setControls();
+
+  if(scores[winnerIdx]>=TARGET_SCORE){
+    $('start').textContent='Game baru';
+    say(`${summaryPrefix} (+${gained} poin). 🎉 <b>MANYARATUS! ${names[winnerIdx]}</b> juara (<b>${scores[winnerIdx]}</b>)!`);
+  }else{
+    $('start').textContent='Lanjut ronde';
+    say(`${summaryPrefix} (+${gained} poin → <b>${scores[winnerIdx]}</b>). Tekan <b>Lanjut ronde</b>!`);
+  }
+}
+
+function finish(w,why){
+  awardPoints(w,`🏆 <b>${names[w]}</b> menang (${why})`);
+}
+
+function finishGuplah(){
+  let rem=hands.map(handPipScore),min=Math.min(...rem),w=rem.indexOf(min);
+  let detail=rem.map((s,i)=>`${names[i]}:${s}`).join(' · ');
+  awardPoints(w,`🔒 <b>GUPLAH!</b> (${detail}). Menang: <b>${names[w]}</b> (${min})`);
+}
+
+$('start').onclick=start;
+$('cut').onclick=()=>{if(turn===0&&started&&!locked)performCut('Kamu')};
+$('left').onclick=()=>{if(selected>=0)place(selected,'left')};
+$('right').onclick=()=>{if(selected>=0)place(selected,'right')};
+$('pass').onclick=()=>{
+  if(turn!==0||optionsFor(hands[0]).length)return;
+  passes++;
+  say('Kamu melewati giliran.');
+  turn=1;
+  render();setControls();
+  if(passes>=4)finishGuplah();
+  else setTimeout(botTurn,450);
+};
+$('resetScore').onclick=()=>{
+  scores=[0,0,0,0];
+  nextStarter=0;
+  started=false;locked=false;chain=[];doubles=[];hands=[[],[],[],[]];
+  $('start').textContent='Mulai ronde';
+  say('Poin direset ke 0. Tekan <b>Mulai ronde</b>.');
+  render();setControls();
+};
+$('bgm').onclick=()=>{
+  bgmOn=!bgmOn;
+  const btn=$('bgm');
+  if(bgmOn){
+    btn.textContent='🎵 C.A.S';
+    btn.classList.add('active-music');
+    startBGM();
+    say(`🎵 Memutar: <b>${CAS_TRACKS[currentTrack].name}</b>`);
+  }else{
+    btn.textContent='🔇 C.A.S';
+    btn.classList.remove('active-music');
+    stopBGM();
+  }
+};
+$('nextTrack').onclick=()=>{
+  currentTrack=(currentTrack+1)%CAS_TRACKS.length;
+  bgmStep=0;
+  if(!bgmOn){
+    bgmOn=true;
+    $('bgm').textContent='🎵 C.A.S';
+    $('bgm').classList.add('active-music');
+  }
+  startBGM();
+  say(`🎵 Lagu diganti ke: <b>${CAS_TRACKS[currentTrack].name}</b>`);
+};
+$('sound').onclick=()=>{sound=!sound;$('sound').textContent=sound?'🔊':'🔇'};
+
+render();setControls();
+</script>
+</body></html>
