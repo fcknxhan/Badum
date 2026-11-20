@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gaple Banjar</title>
+<style>
+:root{--felt:#126044;--felt2:#0b4935;--gold:#f3c969;--ink:#17231e;--cut:#ff6b4a}
+*{box-sizing:border-box}body{margin:0;background:#092f25;color:#f7f3e8;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:14px 18px;text-align:center;background:#08271f;border-bottom:1px solid #28634e}
+h1{margin:0;font-size:clamp(22px,4vw,30px);letter-spacing:.5px}header p{margin:4px 0 0;color:#c7ddcf;font-size:12px}
+main{max-width:1100px;margin:auto;padding:12px;display:grid;gap:12px}
+.table{background:radial-gradient(ellipse at center,var(--felt),var(--felt2));border:7px solid #70452a;border-radius:26px;padding:14px;box-shadow:0 12px 30px #0006;min-height:380px;display:grid;grid-template-rows:auto 1fr auto;gap:10px}
+.opponents{display:flex;justify-content:space-around;gap:8px;flex-wrap:wrap}
+.player{background:#082b22c9;border:1px solid #6da58a;border-radius:12px;padding:8px 12px;text-align:center;min-width:130px;transition:.2s}
+.player.active{outline:3px solid var(--gold);transform:translateY(-2px)}
+.player strong{display:block;font-size:14px}
+.score-badge{display:inline-block;margin-top:4px;padding:2px 8px;border-radius:99px;background:#134e3b;border:1px solid #f3c96988;color:#ffe4a2;font-size:11px;font-weight:700}
+.muted{font-size:12px;color:#c6d9ce;display:block;margin-top:2px}
+.center{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;min-height:185px}
+.chain{display:flex;align-items:center;justify-content:center;gap:5px;flex-wrap:wrap;max-width:100%;padding:8px}
+.domino{width:68px;height:36px;background:#fffdf4;color:#17231e;border:2px solid #d9d2c1;border-radius:7px;display:flex;align-items:center;justify-content:space-between;padding:3px 4px;box-shadow:0 3px 5px #0005;position:relative;flex-shrink:0}
+.domino i{height:24px;border-left:1.5px solid #b5ad9c;flex-shrink:0}
+.domino.double{border-color:#f0c45c;background:#fff5d8}
+.domino.cut-result{border-color:#ff6b4a;box-shadow:0 0 12px #ff6b4a88}
+.sidepile{font-size:12px;color:#f8e5aa;text-align:center}.ends{font-size:12px;color:#d7eadc;font-weight:600}
+.handarea{background:#103d30;border:1px solid #39785d;border-radius:16px;padding:12px}.handhead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.hand{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:14px 0 6px}
+.tile{width:78px;height:44px;border:2px solid #ddd5c5;border-radius:8px;background:#fffdf4;color:#14251d;display:flex;align-items:center;justify-content:space-between;padding:4px 5px;cursor:pointer;box-shadow:0 3px 5px #0004;transition:.15s;position:relative}
+.tile:hover:not(:disabled){transform:translateY(-6px);border-color:var(--gold)}
+.tile.playable:not(:disabled){border-color:#5ef2a6;box-shadow:0 0 10px #5ef2a655}
+.tile.selected{outline:3px solid var(--gold);transform:translateY(-8px);background:#fff9e6}
+.tile:disabled{opacity:.45;cursor:not-allowed}
+.tile .sep{border-left:1.5px solid #b5ad9c;height:30px;flex-shrink:0}
+
+/* Grid 3x3 presisi agar biji tidak pernah keluar kotak */
+.half{width:26px;height:26px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);place-items:center;flex-shrink:0}
+.tile .half{width:30px;height:30px}
+.dot{width:5.5px;height:5.5px;border-radius:50%;background:#1a2433}
+.tile .dot{width:6.5px;height:6.5px}
+.dot.red{background:#c82333}
+
+.controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:4px}
+.btn{border:0;border-radius:10px;padding:10px 14px;font-weight:750;cursor:pointer;background:var(--gold);color:#30230b;transition:.15s;font-size:13px}
+.btn:hover:not(:disabled){filter:brightness(1.06)}
+.btn.secondary{background:#d9e6dc;color:#18382b}
+.btn.cut{background:linear-gradient(135deg,#ff7e5f,#eb4d30);color:#fff;box-shadow:0 4px 12px #eb4d3066}
+.btn:disabled{opacity:.38;cursor:not-allowed;box-shadow:none}
+.notice{padding:10px 12px;background:#08271f;border:1px solid #3c755c;border-radius:12px;text-align:center;min-height:42px;font-size:14px;line-height:1.4}
+.rules{font-size:12px;line-height:1.5;color:#c7d9ce;background:#08271f;border-radius:12px;padding:12px}.tag{color:#ffe4a2;font-weight:700}
+@media(max-width:600px){
+  .table{padding:9px;min-height:340px}
+  .domino{width:58px;height:32px;padding:2px 3px}
+  .half{width:22px;height:22px}
+  .dot{width:4.5px;height:4.5px}
+  .tile{width:70px;height:40px;padding:3px 4px}
+  .tile .half{width:27px;height:27px}
+  .tile .dot{width:5.5px;height:5.5px}
+  .player{min-width:105px;padding:7px}
+}
+</style>
+</head>
+<body>
+<header><h1>🁣 GAPLE BANJAR</h1><p>4 Pemain • Potong Jalur Tengah • Poin Manyaratus (100)</p></header>
+<main>
+<section class="table">
+ <div class="opponents" id="opponents"></div>
+ <div class="center">
+  <div class="ends" id="ends">Belum ada jalur kartu</div>
+  <div class="chain" id="chain"><span class="muted">Tekan “Mulai ronde” untuk membagikan kartu</span></div>
+  <div class="sidepile" id="doubles"></div>
+ </div>
+ <div class="notice" id="notice">Selamat datang! Tekan <b>Mulai ronde</b> untuk bermain.</div>
+</section>
+<section class="handarea">
+ <div class="handhead"><strong>Kartu kamu (ketuk untuk langsung jalan)</strong><span class="muted" id="turninfo">Menunggu permainan</span></div>
+ <div class="hand" id="hand"></div>
+ <div class="controls">
+  <button class="btn" id="start">Mulai ronde</button>
+  <button class="btn cut" id="cut" disabled>✂️ Potong jalur</button>
+  <button class="btn secondary" id="left" disabled>Pasang kiri</button>
+  <button class="btn secondary" id="right" disabled>Pasang kanan</button>
+  <button class="btn secondary" id="pass" disabled>Lewati giliran</button>
+  <button class="btn secondary" id="resetScore">Reset poin</button>
+  <button class="btn secondary" id="sound">🔊 Suara: aktif</button>
+ </div>
+</section>
+<div class="rules"><span class="tag">Aturan Gaple Banjar:</span>
+<br>• <b>Jalan Otomatis:</b> Ketuk kartu yang menyala hijau di tanganmu untuk langsung jalan otomatis (jika cocok di kedua ujung kiri & kanan, kartu akan ditandai agar kamu bisa pilih <i>Pasang kiri</i> atau <i>Pasang kanan</i>).
+<br>• <b>Balak Terpisah:</b> Balak hanya bisa keluar jika cocok dengan ujung kiri/kanan (kecuali pembuka) dan diletakkan terpisah di zona balak tanpa mengubah ujung jalur.
+<br>• <b>✂️ Potong Jalur Tengah:</b> Jika jalur sudah memiliki minimal 4 kartu dan angka ujung kiri atau ujung kanan sama dengan kartu di tengah jalur, jalur bisa dipotong sehingga tersisa <b>1 kartu perwakilan</b> dengan ujung kiri dan kanan yang tetap sama.
+<br>• <b>Poin & Manyaratus (100):</b> Pemenang ronde (habis kartu atau <b>GUPLAH</b> sisa biji terkecil; <code>0|0</code> dihitung 25 jika tak ada pasangan 0) mendapat poin dari sisa biji seluruh lawan hingga mencapai target <b>100 poin (Manyaratus)</b>.</div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+let hands=[],chain=[],doubles=[],turn=0,selected=-1,started=false,passes=0,sound=true,locked=false;
+let scores=[0,0,0,0],nextStarter=0;
+const TARGET_SCORE=100;
+const names=['Kamu','Bot 1','Bot 2','Bot 3'];
+
+const PIP_MAP={
+  0:[],
+  1:[4],
+  2:[0,8],
+  3:[0,4,8],
+  4:[0,2,6,8],
+  5:[0,2,4,6,8],
+  6:[0,2,3,5,6,8]
+};
+
+function pip(n){
+  const active=PIP_MAP[n]||[];
+  const isRed=(n===1||n===4);
+  let cells='';
+  for(let i=0;i<9;i++){
+    cells+=active.includes(i)?`<span class="dot${isRed?' red':''}"></span>`:'<span></span>';
+  }
+  return `<div class="half">${cells}</div>`;
+}
+
+function tileHTML(a,b,cls='domino'){return `<div class="${cls}${a===b?' double':''}">${pip(a)}<i></i>${pip(b)}</div>`}
+function allTiles(){let a=[];for(let x=0;x<=6;x++)for(let y=x;y<=6;y++)a.push([x,y]);return a}
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function say(t){$('notice').innerHTML=t}
+
+function playSound(type='ctak'){
+  if(!sound)return;
+  try{
+    let c=new (window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();
+    if(type==='cut'){
+      o.type='sawtooth';
+      o.frequency.setValueAtTime(780,c.currentTime);
+      o.frequency.exponentialRampToValueAtTime(220,c.currentTime+.12);
+      g.gain.setValueAtTime(.0001,c.currentTime);
+      g.gain.exponentialRampToValueAtTime(.25,c.currentTime+.01);
+      g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.14);
+      o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.15);
+    }else{
+      o.type='triangle';
+      o.frequency.setValueAtTime(520,c.currentTime);
+      o.frequency.exponentialRampToValueAtTime(170,c.currentTime+.055);
+      g.gain.setValueAtTime(.0001,c.currentTime);
+      g.gain.exponentialRampToValueAtTime(.22,c.currentTime+.006);
+      g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.09);
+      o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.1);
+    }
+    setTimeout(()=>c.close(),220);
+  }catch(e){}
+}
+
+function start(){
+  if(Math.max(...scores)>=TARGET_SCORE){
+    scores=[0,0,0,0];
+    nextStarter=0;
+  }
+  hands=[[],[],[],[]];chain=[];doubles=[];turn=nextStarter;selected=-1;passes=0;locked=false;
+  let deck=shuffle(allTiles());
+  for(let i=0;i<28;i++)hands[i%4].push(deck[i]);
+  hands.forEach(h=>h.sort((a,b)=>(a[0]+a[1])-(b[0]+b[1])));
+  started=true;
+  $('start').textContent='Ronde baru';
+  say(`Kartu dibagikan! <b>${names[turn]}</b> jalan pertama.`);
+  render();setControls();
+  if(turn!==0)setTimeout(botTurn,700);
+}
+
+// Cek apakah jalur memenuhi syarat potong (minimal 4 kartu & ujung kiri/kanan muncul di tengah jalur)
+function canCut(){
+  if(chain.length<4)return false;
+  const L=chain[0][0], R=chain[chain.length-1][1];
+  for(let i=1;i<chain.length-1;i++){
+    if(chain[i][0]===L||chain[i][1]===L||chain[i][0]===R||chain[i][1]===R)return true;
+  }
+  return false;
+}
+
+function performCut(byWho){
+  if(!canCut())return false;
+  const L=chain[0][0], R=chain[chain.length-1][1];
+  chain=[[L,R]];
+  playSound('cut');
+  say(`✂️ <b>${byWho}</b> memotong jalur tengah! Tersisa 1 kartu perwakilan <b>[${L} | ${R}]</b>.`);
+  render();
+  setControls();
+  return true;
+}
+
+function render(){
+  $('opponents').innerHTML=names.slice(1).map((n,i)=>`
+    <div class="player ${turn===i+1&&started&&!locked?'active':''}">
+      <strong>${n}</strong>
+      <span class="score-badge">🏆 ${scores[i+1]} / ${TARGET_SCORE}</span>
+      <span class="muted">${hands[i+1]?.length??0} kartu ${turn===i+1&&started&&!locked?'• giliran':''}</span>
+    </div>`).join('')+`
+    <div class="player ${turn===0&&started&&!locked?'active':''}">
+      <strong>Kamu</strong>
+      <span class="score-badge">🏆 ${scores[0]} / ${TARGET_SCORE}</span>
+      <span class="muted">${hands[0]?.length??0} kartu ${turn===0&&started&&!locked?'• giliran':''}</span>
+    </div>`;
+
+  $('chain').innerHTML=chain.length
+    ? chain.map(t=>tileHTML(t[0],t[1],chain.length===1&&started?'domino cut-result':'domino')).join('')
+    : '<span class="muted">Jalur masih kosong</span>';
+
+  $('doubles').textContent=doubles.length?'Balak di luar jalur: '+doubles.map(t=>`${t[0]}|${t[1]}`).join('  ·  '):'';
+  $('ends').textContent=chain.length?`Ujung kiri: ${chain[0][0]}   |   Ujung kanan: ${chain[chain.length-1][1]}`:'';
+
+  const myTurn=turn===0&&started&&!locked;
+  $('hand').innerHTML=(hands[0]||[]).map((t,i)=>{
+    const ok=myTurn&&legal(t);
+    return `<button class="tile ${ok?'playable':''} ${selected===i?'selected':''}" data-i="${i}" ${!myTurn?'disabled':''}>${pip(t[0])}<span class="sep"></span>${pip(t[1])}</button>`;
+  }).join('');
+
+  $('hand').querySelectorAll('button').forEach(b=>b.onclick=()=>handleCardTap(+b.dataset.i));
+  $('turninfo').textContent=started?(locked?'Ronde selesai':(turn===0?'Giliran kamu':'Giliran '+names[turn])):'Menunggu permainan';
+}
+
+// Jalan otomatis saat kartu ditekan jika hanya ada 1 arah; jika bisa kiri & kanan, minta pilih arah
+function handleCardTap(idx){
+  if(turn!==0||!started||locked)return;
+  const t=hands[0][idx];
+  if(!t)return;
+  if(!legal(t)){
+    selected=-1;
+    say(`Kartu <b>${t[0]}|${t[1]}</b> tidak cocok dengan ujung kiri (${chain[0][0]}) maupun kanan (${chain[chain.length-1][1]}).`);
+    render();setControls();
+    return;
+  }
+  if(!chain.length||t[0]===t[1]){
+    place(idx,'right');
+    return;
+  }
+  const L=chain[0][0], R=chain[chain.length-1][1];
+  const fitLeft=(t[0]===L||t[1]===L);
+  const fitRight=(t[0]===R||t[1]===R);
+
+  if(fitLeft && !fitRight){
+    place(idx,'left');
+  }else if(fitRight && !fitLeft){
+    place(idx,'right');
+  }else if(fitLeft && fitRight){
+    if(L===R){
+      place(idx,'right');
+    }else{
+      selected=idx;
+      say(`Kartu <b>${t[0]}|${t[1]}</b> bisa masuk di kedua sisi! Tekan <b>Pasang kiri (${L})</b> atau <b>Pasang kanan (${R})</b>.`);
+      render();setControls();
+    }
+  }
+}
+
+function legal(t){
+  if(!chain.length)return true;
+  if(t[0]===t[1])return t[0]===chain[0][0]||t[0]===chain[chain.length-1][1];
+  return t.includes(chain[0][0])||t.includes(chain[chain.length-1][1]);
+}
+
+function place(idx,side){
+  let h=hands[turn],t=h[idx];
+  if(!t||!legal(t))return false;
+  h.splice(idx,1);
+  if(t[0]===t[1]){
+    doubles.push(t);
+  }else if(!chain.length){
+    chain.push(t);
+  }else if(side==='left'){
+    if(t[0]===chain[0][0])chain.unshift([t[1],t[0]]);
+    else if(t[1]===chain[0][0])chain.unshift(t);
+    else return false;
+  }else{
+    if(t[0]===chain[chain.length-1][1])chain.push(t);
+    else if(t[1]===chain[chain.length-1][1])chain.push([t[1],t[0]]);
+    else return false;
+  }
+  selected=-1;passes=0;playSound('ctak');
+  say(`<b>${names[turn]}</b> mengeluarkan <b>${t[0]}|${t[1]}</b> — ctak!`);
+  if(h.length===0){
+    render();
+    finish(turn,'habis kartu');
+    return true;
+  }
+  turn=(turn+1)%4;
+  render();setControls();
+  if(turn!==0)setTimeout(botTurn,650);
+  return true;
+}
+
+function optionsFor(h){
+  let out=[];
+  h.forEach((t,i)=>{
+    if(!chain.length)out.push({i,side:'right',t});
+    else if(t[0]===t[1]){if(legal(t))out.push({i,side:'right',t})}
+    else{
+      if(t[0]===chain[0][0]||t[1]===chain[0][0])out.push({i,side:'left',t});
+      if(t[0]===chain[chain.length-1][1]||t[1]===chain[chain.length-1][1])out.push({i,side:'right',t});
+    }
+  });
+  return out;
+}
+
+function setControls(){
+  let mine=turn===0&&started&&!locked,opts=mine?optionsFor(hands[0]):[];
+  let chosen=selected>=0?hands[0][selected]:null;
+  let ok=chosen&&legal(chosen);
+  $('cut').disabled=!mine||!canCut();
+  $('left').disabled=!mine||!ok||(!chain.length)||(chosen[0]===chosen[1])||!(chosen[0]===chain[0][0]||chosen[1]===chain[0][0]);
+  $('right').disabled=!mine||!ok||(chain.length>0&&chosen[0]!==chosen[1]&&!(chosen[0]===chain[chain.length-1][1]||chosen[1]===chain[chain.length-1][1]));
+  $('pass').disabled=!mine||opts.length>0;
+  $('start').disabled=started&&!locked;
+}
+
+function botTurn(){
+  if(!started||turn===0||locked)return;
+  // Bot cerdas ikut memanfaatkan potong jalur jika panjang >= 6
+  if(canCut() && chain.length>=6 && Math.random()<0.65){
+    performCut(names[turn]);
+    setTimeout(botTurn,550);
+    return;
+  }
+  let h=hands[turn],opts=optionsFor(h);
+  if(opts.length){
+    opts.sort((a,b)=>(b.t[0]+b.t[1])-(a.t[0]+a.t[1]));
+    let o=opts[0];
+    place(o.i,o.side);
+  }else{
+    passes++;
+    say(`<b>${names[turn]}</b> lewat (tidak ada kartu cocok).`);
+    turn=(turn+1)%4;
+    render();
+    if(passes>=4){finishGuplah();return}
+    if(turn!==0)setTimeout(botTurn,550);
+    else{
+      setControls();
+      if(optionsFor(hands[0]).length===0){
+        say('Kamu tidak punya kartu yang cocok. Tekan <b>Lewati giliran</b>.');
+      }else{
+        say('Giliran kamu! Ketuk kartu yang menyala hijau untuk jalan.');
+      }
+    }
+  }
+}
+
+function handPipScore(h){
+  let hasZeroPair=h.some(t=>t[0]===0||t[1]===0);
+  return h.reduce((s,t)=>s+(t[0]===0&&t[1]===0?(hasZeroPair?0:25):t[0]+t[1]),0);
+}
+
+function awardPoints(winnerIdx, summaryPrefix){
+  let gained=0;
+  for(let i=0;i<4;i++){
+    if(i!==winnerIdx)gained+=handPipScore(hands[i]);
+  }
+  scores[winnerIdx]+=gained;
+  nextStarter=winnerIdx;
+  locked=true;
+  render();setControls();
+
+  if(scores[winnerIdx]>=TARGET_SCORE){
+    $('start').textContent='Main game baru';
+    say(`${summaryPrefix} (+${gained} poin). 🎉 <b>MANYARATUS! ${names[winnerIdx]}</b> menang total dengan <b>${scores[winnerIdx]} poin</b>!`);
+  }else{
+    $('start').textContent='Lanjut ronde berikutnya';
+    say(`${summaryPrefix} (+${gained} poin → total <b>${scores[winnerIdx]}</b>). Tekan <b>Lanjut ronde berikutnya</b>!`);
+  }
+}
+
+function finish(w,why){
+  awardPoints(w,`🏆 <b>${names[w]}</b> menang ronde karena ${why}`);
+}
+
+function finishGuplah(){
+  let rem=hands.map(handPipScore),min=Math.min(...rem),w=rem.indexOf(min);
+  let detail=rem.map((s,i)=>`${names[i]}: ${s}`).join(' • ');
+  awardPoints(w,`🔒 <b>GUPLAH!</b> (${detail}). Pemenang: <b>${names[w]}</b> sisa terkecil (${min})`);
+}
+
+$('start').onclick=start;
+$('cut').onclick=()=>{if(turn===0&&started&&!locked)performCut('Kamu')};
+$('left').onclick=()=>{if(selected>=0)place(selected,'left')};
+$('right').onclick=()=>{if(selected>=0)place(selected,'right')};
+$('pass').onclick=()=>{
+  if(turn!==0||optionsFor(hands[0]).length)return;
+  passes++;
+  say('Kamu melewati giliran.');
+  turn=1;
+  render();setControls();
+  if(passes>=4)finishGuplah();
+  else setTimeout(botTurn,450);
+};
+$('resetScore').onclick=()=>{
+  scores=[0,0,0,0];
+  nextStarter=0;
+  started=false;locked=false;chain=[];doubles=[];hands=[[],[],[],[]];
+  $('start').textContent='Mulai ronde';
+  say('Poin semua pemain direset ke 0. Tekan <b>Mulai ronde</b>.');
+  render();setControls();
+};
+$('sound').onclick=()=>{sound=!sound;$('sound').textContent=sound?'🔊 Suara: aktif':'🔇 Suara: mati'};
+
+render();setControls();
+</script>
+</body></html>
